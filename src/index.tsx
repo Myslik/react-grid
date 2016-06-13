@@ -1,9 +1,17 @@
+/// <reference path="../typings/index.d.ts" />
+
 import * as React from "react";
 import * as ReactDOM from "react-dom";
+import { Adapter } from "./adapter";
+import { Grid } from "./grid";
 
-import { Hello } from "./Hello";
+var adapter = new Adapter();
+var columns = [
+    { key: "id" },
+    { key: "name" }
+];
 
-ReactDOM.render(
-    <Hello compiler="TypeScript" framework="React" />,
+ReactDOM.render(    
+    <Grid adapter={adapter} columns={columns} />,
     document.getElementById("example")
 );

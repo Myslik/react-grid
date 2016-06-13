@@ -10,7 +10,12 @@
     },
     "files": [
         "./typings/index.d.ts",
-        "./src/hello.tsx",
+        "./src/entity.ts",
+        "./src/adapter.ts",
+        "./src/column.ts",
+        "./src/cell.tsx",
+        "./src/row.tsx",
+        "./src/grid.tsx",
         "./src/index.tsx"
     ]
 }

@@ -1,0 +1,131 @@
+.row-cell {
+  -moz-box-sizing: border-box;
+  -webkit-box-sizing: border-box;
+  box-sizing: border-box;
+  background-color: transparent;
+  display: inline-block;
+  height: 100%;
+  position: relative;
+  vertical-align: top;
+  white-space: nowrap;
+  overflow: hidden;
+  -ms-text-overflow: ellipsis;
+  -o-text-overflow: ellipsis;
+  text-overflow: ellipsis;
+  padding: 5px;
+  z-index: 1;
+}
+.header-cell {
+  -moz-box-sizing: border-box;
+  -webkit-box-sizing: border-box;
+  box-sizing: border-box;
+  background-color: transparent;
+  display: inline-block;
+  height: 100%;
+  position: relative;
+  vertical-align: top;
+  border-right: 1px solid #ddd;
+}
+.moravia-grid {
+  background-color: #fff;
+  border: 1px solid #ddd;
+  font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
+  font-size: 11px;
+  position: relative;
+}
+.moravia-grid .moravia-grid-scrollable {
+  overflow: auto;
+  position: relative;
+}
+.moravia-grid .moravia-grid-header,
+.moravia-grid .moravia-grid-row,
+.moravia-grid .moravia-grid-body {
+  white-space: nowrap;
+  display: block;
+  position: relative;
+}
+.moravia-grid .moravia-grid-header {
+  background-color: #fafafa;
+  border-bottom: 1px solid #ddd;
+  color: #666;
+  text-transform: uppercase;
+  z-index: 2;
+}
+.moravia-grid .moravia-grid-row {
+  background-color: #fff;
+  border-bottom: 1px solid #ddd;
+  cursor: pointer;
+}
+.moravia-grid .moravia-grid-row:last-child {
+  border-bottom: none;
+}
+.moravia-grid .moravia-grid-row.active {
+  background-color: #d9edf7;
+}
+.moravia-grid .moravia-grid-header-cell {
+  -moz-box-sizing: border-box;
+  -webkit-box-sizing: border-box;
+  box-sizing: border-box;
+  background-color: transparent;
+  display: inline-block;
+  height: 100%;
+  position: relative;
+  vertical-align: top;
+  border-right: 1px solid #ddd;
+  white-space: nowrap;
+  overflow: hidden;
+  -ms-text-overflow: ellipsis;
+  -o-text-overflow: ellipsis;
+  text-overflow: ellipsis;
+  padding: 5px;
+}
+.moravia-grid .moravia-grid-header-cell:last-child {
+  border-right: none;
+}
+.moravia-grid .moravia-grid-row-cell {
+  -moz-box-sizing: border-box;
+  -webkit-box-sizing: border-box;
+  box-sizing: border-box;
+  background-color: transparent;
+  display: inline-block;
+  height: 100%;
+  position: relative;
+  vertical-align: top;
+  white-space: nowrap;
+  overflow: hidden;
+  -ms-text-overflow: ellipsis;
+  -o-text-overflow: ellipsis;
+  text-overflow: ellipsis;
+  padding: 5px;
+  z-index: 1;
+}
+.moravia-grid .moravia-grid-row-cell:last-child {
+  border-right: none;
+}
+.moravia-grid .moravia-grid-overlay {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  z-index: 10;
+  background-color: white;
+}
+.moravia-grid .moravia-grid-overlay .message {
+  -moz-box-sizing: border-box;
+  -webkit-box-sizing: border-box;
+  box-sizing: border-box;
+  background-color: transparent;
+  display: inline-block;
+  height: 100%;
+  position: relative;
+  vertical-align: top;
+  white-space: nowrap;
+  overflow: hidden;
+  -ms-text-overflow: ellipsis;
+  -o-text-overflow: ellipsis;
+  text-overflow: ellipsis;
+  padding: 5px;
+  z-index: 1;
+  width: 100%;
+}

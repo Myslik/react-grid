@@ -1,0 +1,118 @@
+﻿@grid-color: #444;
+@grid-bg: #fff;
+@grid-border-color: #ddd;
+@grid-header-color: #666;
+@grid-header-bg: #fafafa;
+@grid-active: #d9edf7;
+@grid-cell-padding: 5px;
+
+.border-box() {
+    -moz-box-sizing: border-box;
+    -webkit-box-sizing: border-box;
+    box-sizing: border-box;
+}
+
+.ellipsis() {
+    white-space: nowrap;
+    overflow: hidden;
+    -ms-text-overflow: ellipsis;
+    -o-text-overflow: ellipsis;
+    text-overflow: ellipsis;
+}
+
+.cell() {
+	.border-box();
+	background-color: transparent;
+	display: inline-block;
+	height: 100%;
+	position: relative;
+	vertical-align: top;
+}
+
+.row-cell {
+	.cell();
+	.ellipsis();
+	padding: @grid-cell-padding;
+	z-index: 1;
+}
+
+.header-cell {
+	.cell();
+	border-right: 1px solid @grid-border-color;
+}
+
+.moravia-grid {
+    background-color: @grid-bg;
+	border: 1px solid @grid-border-color;
+    font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
+    font-size: 11px;
+    position: relative;
+	
+	.moravia-grid-scrollable {
+        overflow: auto;
+        position: relative;
+    }
+	
+	.moravia-grid-header,
+    .moravia-grid-row,
+    .moravia-grid-body {
+        white-space: nowrap;
+        display: block;
+		position: relative;
+    }
+	
+	.moravia-grid-header {
+		background-color: @grid-header-bg;
+        border-bottom: 1px solid @grid-border-color;
+		color: @grid-header-color;
+        text-transform: uppercase;
+        z-index: 2;
+    }
+
+    .moravia-grid-row {
+		background-color: @grid-bg;
+        border-bottom: 1px solid @grid-border-color;
+        cursor: pointer;
+
+        &:last-child {
+            border-bottom: none;
+        }
+				
+		&.active {
+			background-color: @grid-active;
+		}
+	}
+	
+	.moravia-grid-header-cell {
+        .header-cell();
+		.ellipsis();
+		padding: @grid-cell-padding;
+
+        &:last-child {
+            border-right: none;
+        }
+	}
+	
+	.moravia-grid-row-cell {
+        .row-cell();
+
+        &:last-child {
+            border-right: none;
+        }
+	}
+	
+	.moravia-grid-overlay {
+		position: absolute;
+		top: 0;
+		left: 0;
+		width: 100%;
+		height: 100%;
+		z-index: 10;
+		background-color: white;
+		
+		.message {
+			.row-cell();
+			width: 100%;
+		}
+	}
+}
