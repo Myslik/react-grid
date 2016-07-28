@@ -40,7 +40,8 @@ export class HeaderCell extends React.Component<IHeaderCellProps, any> {
         }
         return (
             <div style={style} className="moravia-grid-header-cell">
-                {this.props.title}
+                <span className="title">{this.props.title}</span>
+                <span className="icon-sort"></span>
             </div>
         );
     }

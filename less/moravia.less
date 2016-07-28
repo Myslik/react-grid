@@ -99,6 +99,24 @@
         &:last-child {
             border-right: none;
         }
+
+		.title {
+			white-space: nowrap;
+    		overflow: hidden;
+    		text-overflow: ellipsis;
+    		float: left;
+    		padding: 0 @grid-cell-padding;
+		}
+
+		.icon-sort,
+		.icon-sort-up,
+		.icon-sort-down {
+			float: left;
+    		color: #ccc;
+    		text-align: center;
+    		cursor: pointer;
+    		padding-right: @grid-cell-padding;
+		}
 	}
 	
 	.moravia-grid-row-cell {

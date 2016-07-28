@@ -3,7 +3,7 @@
 import * as React from "react";
 import { IEntity } from "./entity";
 import { IColumn } from "./column";
-import { Query, IAdapter } from "./adapter";
+import { Query, Filter, Sorting, IAdapter } from "./adapter";
 import { Header } from "./header";
 import { Row } from "./row";
 
@@ -15,11 +15,12 @@ export interface IGridProps {
 export interface IGridState {
     entities: IEntity[];
     selection: string[];
+    orderby?: Sorting;
+    filter?: Filter[];
+    select?: string[];
 }
 
 export class Grid extends React.Component<IGridProps, IGridState> {
-    private _nextQuery: Query;
-
     constructor(props: IGridProps) {
         super(props);
         this.state = {
@@ -29,6 +30,21 @@ export class Grid extends React.Component<IGridProps, IGridState> {
     }
 
     componentDidMount(): void {
+        this.reset();
+    }
+
+    private _nextQuery: Query;
+
+    reset(): void {
+        this._nextQuery = {
+            orderby: this.state.orderby,
+            filter: this.state.filter,
+            select: this.state.select
+        };
+        this.load();
+    }
+
+    load(): void {
         this.props.adapter.find(this._nextQuery).then(data => {
             this._nextQuery = data.next;
             this.setState((prevState, props) => {
@@ -89,7 +105,7 @@ export class Grid extends React.Component<IGridProps, IGridState> {
         var allSelected = this.state.selection.length > 0;
         return (
             <div className="moravia-grid">
-                <div className="moravia-grid-scrollable" onScroll={this.handleScroll.bind(this)}>
+                <div className="moravia-grid-scrollable" onScroll={this.handleScroll.bind(this) }>
                     <div className="moravia-grid-inner">
                         <Header
                             columns={this.props.columns}

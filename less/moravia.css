@@ -89,6 +89,22 @@
 .moravia-grid .moravia-grid-header-cell:last-child {
   border-right: none;
 }
+.moravia-grid .moravia-grid-header-cell .title {
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  float: left;
+  padding: 0 5px;
+}
+.moravia-grid .moravia-grid-header-cell .icon-sort,
+.moravia-grid .moravia-grid-header-cell .icon-sort-up,
+.moravia-grid .moravia-grid-header-cell .icon-sort-down {
+  float: left;
+  color: #ccc;
+  text-align: center;
+  cursor: pointer;
+  padding-right: 5px;
+}
 .moravia-grid .moravia-grid-row-cell {
   -moz-box-sizing: border-box;
   -webkit-box-sizing: border-box;

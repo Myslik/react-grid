@@ -34,6 +34,7 @@ export interface IAdapter {
 
 export class Adapter implements IAdapter {
     public static DEFAULT_TOP: number = 25;
+    public static CHANCE_SEED: number = 1337;
 
     private defaultQuery(query?: Query): Query {
         if (!!query) {
@@ -52,7 +53,7 @@ export class Adapter implements IAdapter {
     public find(query?: Query): Promise<Data> {
         query = this.defaultQuery(query);
         return new Promise<Data>((resolve, reject) => {
-            var chance = Chance.Chance();
+            var chance = Chance.Chance(Adapter.CHANCE_SEED);
             var rows = [];
             for (var i = 1; i <= query.top; i++) {
                 rows.push({

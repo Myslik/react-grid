@@ -7,10 +7,10 @@ import { Grid } from "./grid";
 
 var adapter = new Adapter();
 var columns = [
-    { key: "id", width: 40 },
-    { key: "firstName", width: 100 },
-    { key: "lastName", width: 100 },
-    { key: "age", width: 40 },
+    { key: "id", width: 70 },
+    { key: "firstName", width: 120 },
+    { key: "lastName", width: 120 },
+    { key: "age", width: 70 },
     { key: "address", width: 200 }
 ];
 
