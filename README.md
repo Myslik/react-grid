@@ -7,6 +7,7 @@
 - [x] Column definition
 - [x] Row selection
 - [x] Asynchronous API
+- [x] Fixed size support
 - [ ] Adapter interface
 - [ ] Sorting
 - [ ] Filtering

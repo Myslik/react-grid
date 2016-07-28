@@ -7,8 +7,9 @@ import { Grid } from "./grid";
 
 var adapter = new Adapter();
 var columns = [
-    { key: "id" },
-    { key: "name" }
+    { key: "id", width: 50 },
+    { key: "firstName", width: 200 },
+    { key: "lastName", width: 200 }
 ];
 
 ReactDOM.render(    

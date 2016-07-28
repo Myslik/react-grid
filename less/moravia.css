@@ -32,10 +32,17 @@
   font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
   font-size: 11px;
   position: relative;
+  height: 100%;
 }
 .moravia-grid .moravia-grid-scrollable {
   overflow: auto;
   position: relative;
+  height: 100%;
+}
+.moravia-grid .moravia-grid-inner {
+  background-color: transparent;
+  display: table;
+  width: 100%;
 }
 .moravia-grid .moravia-grid-header,
 .moravia-grid .moravia-grid-row,

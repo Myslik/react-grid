@@ -64,24 +64,28 @@ export class Grid extends React.Component<IGridProps, IGridState> {
         var allSelected = this.state.selection.length > 0;
         return (
             <div className="moravia-grid">
-                <Header
-                    columns={this.props.columns}
-                    selected={allSelected}
-                    onSelectAll={ () => this.handleSelectAll() } />
-                <div className="moravia-grid-body">
-                    {
-                        this.state.entities.map((entity, index) => {
-                            var selected = this.state.selection.indexOf(entity.id) != -1;
-                            return (
-                                <Row
-                                    key={entity.id}
-                                    entity={entity}
-                                    columns={this.props.columns}
-                                    selected={selected}
-                                    onSelect={ () => this.handleSelect(index) } />
-                            );
-                        })
-                    }
+                <div className="moravia-grid-scrollable">
+                    <div className="moravia-grid-inner">
+                        <Header
+                            columns={this.props.columns}
+                            selected={allSelected}
+                            onSelectAll={ () => this.handleSelectAll() } />
+                        <div className="moravia-grid-body">
+                            {
+                                this.state.entities.map((entity, index) => {
+                                    var selected = this.state.selection.indexOf(entity.id) != -1;
+                                    return (
+                                        <Row
+                                            key={entity.id}
+                                            entity={entity}
+                                            columns={this.props.columns}
+                                            selected={selected}
+                                            onSelect={ () => this.handleSelect(index) } />
+                                    );
+                                })
+                            }
+                        </div>
+                    </div>
                 </div>
             </div>
         );

@@ -47,11 +47,19 @@
     font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
     font-size: 11px;
     position: relative;
-	
+	height: 100%;
+
 	.moravia-grid-scrollable {
-        overflow: auto;
-        position: relative;
-    }
+		overflow: auto;
+		position: relative;
+		height: 100%;
+	}
+
+	.moravia-grid-inner {
+		background-color: transparent;
+		display: table;
+		width: 100%;
+	}
 	
 	.moravia-grid-header,
     .moravia-grid-row,
