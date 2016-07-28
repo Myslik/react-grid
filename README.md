@@ -8,10 +8,10 @@
 - [x] Row selection
 - [x] Asynchronous API
 - [x] Fixed size support
+- [x] Fixed header
 - [ ] Adapter interface
 - [ ] Sorting
 - [ ] Filtering
-- [ ] Fixed header
 - [ ] Infinite scrolling
 - [ ] Column ordering
 - [ ] Column visibility

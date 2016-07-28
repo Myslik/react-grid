@@ -60,11 +60,33 @@ export class Grid extends React.Component<IGridProps, IGridState> {
         });
     }
 
+    handleScroll(e: React.UIEvent) {
+        var scrollable = e.target as HTMLDivElement;
+        var scrollTop = scrollable.scrollTop;
+        var scrollLeft = scrollable.scrollLeft;
+
+        var header = scrollable.getElementsByClassName('moravia-grid-header')[0] as HTMLDivElement;
+        var body = scrollable.getElementsByClassName('moravia-grid-body')[0] as HTMLDivElement;
+        if (scrollTop != 0 || scrollLeft != 0) {
+            body.style.marginTop = header.clientHeight + "px";
+            header.style.position = "absolute";
+            header.style.top = scrollTop + "px";
+            header.style.left = "0";
+            header.style.width = header.parentElement.clientWidth + "px";
+        } else {
+            body.style.marginTop = "0";
+            header.style.position = "static";
+            header.style.top = "auto";
+            header.style.left = "auto";
+            header.style.width = "auto";
+        }
+    }
+
     render() {
         var allSelected = this.state.selection.length > 0;
         return (
             <div className="moravia-grid">
-                <div className="moravia-grid-scrollable">
+                <div className="moravia-grid-scrollable" onScroll={this.handleScroll.bind(this)}>
                     <div className="moravia-grid-inner">
                         <Header
                             columns={this.props.columns}
