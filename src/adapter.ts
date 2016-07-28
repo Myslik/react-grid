@@ -58,7 +58,9 @@ export class Adapter implements IAdapter {
                 rows.push({
                     id: i,
                     firstName: chance.first(),
-                    lastName: chance.last()
+                    lastName: chance.last(),
+                    age: chance.age(),
+                    address: chance.address()
                 });
             }
             query.skip += query.top;
