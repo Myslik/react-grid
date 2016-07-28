@@ -3,12 +3,12 @@
 import * as React from "react";
 import { IEntity } from "./entity";
 import { IColumn } from "./column";
-import { Adapter } from "./adapter";
+import { Query, IAdapter } from "./adapter";
 import { Header } from "./header";
 import { Row } from "./row";
 
 export interface IGridProps {
-    adapter: Adapter;
+    adapter: IAdapter;
     columns: IColumn[];
 }
 
@@ -18,6 +18,8 @@ export interface IGridState {
 }
 
 export class Grid extends React.Component<IGridProps, IGridState> {
+    private _nextQuery: Query;
+
     constructor(props: IGridProps) {
         super(props);
         this.state = {
@@ -27,9 +29,10 @@ export class Grid extends React.Component<IGridProps, IGridState> {
     }
 
     componentDidMount(): void {
-        this.props.adapter.find().then(entities => {
+        this.props.adapter.find(this._nextQuery).then(data => {
+            this._nextQuery = data.next;
             this.setState((prevState, props) => {
-                prevState.entities = entities;
+                prevState.entities = data.rows;
                 prevState.selection = [];
                 return prevState;
             });
@@ -68,7 +71,7 @@ export class Grid extends React.Component<IGridProps, IGridState> {
         var header = scrollable.getElementsByClassName('moravia-grid-header')[0] as HTMLDivElement;
         var body = scrollable.getElementsByClassName('moravia-grid-body')[0] as HTMLDivElement;
         if (scrollTop != 0 || scrollLeft != 0) {
-            body.style.marginTop = header.clientHeight + "px";
+            body.style.marginTop = header.offsetHeight + "px";
             header.style.position = "absolute";
             header.style.top = scrollTop + "px";
             header.style.left = "0";

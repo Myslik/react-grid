@@ -9,7 +9,7 @@
 - [x] Asynchronous API
 - [x] Fixed size support
 - [x] Fixed header
-- [ ] Adapter interface
+- [x] Adapter interface
 - [ ] Sorting
 - [ ] Filtering
 - [ ] Infinite scrolling

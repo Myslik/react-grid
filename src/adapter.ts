@@ -4,19 +4,65 @@ import { IEntity } from "./entity";
 import { Promise } from "es6-promise";
 import { Chance } from "chance";
 
-export class Adapter {
-    public find(): Promise<IEntity[]> {
-        return new Promise<IEntity[]>((resolve, reject) => {
+export interface Query {
+    skip?: number;
+    top?: number;
+    orderby?: Sorting;
+    filter?: Filter[];
+    select?: string[];
+}
+
+export interface Filter {
+    key: string;
+    operator: string;
+    value: string;
+}
+
+export interface Sorting {
+    key: string;
+    asc?: boolean;
+}
+
+export interface Data {
+    rows: IEntity[];
+    next?: Query;
+}
+
+export interface IAdapter {
+    find(query?: Query): Promise<Data>;
+}
+
+export class Adapter implements IAdapter {
+    public static DEFAULT_TOP: number = 25;
+
+    private defaultQuery(query?: Query): Query {
+        if (!!query) {
+            return {
+                top: query.top || Adapter.DEFAULT_TOP,
+                skip: query.skip || 0,
+                orderby: query.orderby,
+                filter: query.filter,
+                select: query.select
+            }
+        } else {
+            return { top: Adapter.DEFAULT_TOP, skip: 0 };
+        }
+    }
+
+    public find(query?: Query): Promise<Data> {
+        query = this.defaultQuery(query);
+        return new Promise<Data>((resolve, reject) => {
             var chance = Chance.Chance();
             var rows = [];
-            for (var i = 1; i <= 25; i++) {
+            for (var i = 1; i <= query.top; i++) {
                 rows.push({
                     id: i,
                     firstName: chance.first(),
                     lastName: chance.last()
                 });
             }
-            resolve(rows);
+            query.skip += query.top;
+            resolve({ rows: rows, next: query });
         });
     }
 }
