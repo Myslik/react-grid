@@ -11,7 +11,7 @@
 - [x] Fixed header
 - [x] Adapter interface
 - [x] Add fontello customized bundle
-- [ ] Sorting
+- [x] Sorting
 - [ ] Filtering
 - [ ] Infinite scrolling
 - [ ] Column ordering

@@ -15,9 +15,7 @@ export interface IGridProps {
 export interface IGridState {
     entities: IEntity[];
     selection: string[];
-    orderby?: Sorting;
-    filter?: Filter[];
-    select?: string[];
+    query?: Query;
 }
 
 export class Grid extends React.Component<IGridProps, IGridState> {
@@ -25,30 +23,20 @@ export class Grid extends React.Component<IGridProps, IGridState> {
         super(props);
         this.state = {
             entities: [],
-            selection: []
+            selection: [],
+            query: {}
         };
     }
 
     componentDidMount(): void {
-        this.reset();
-    }
-
-    private _nextQuery: Query;
-
-    reset(): void {
-        this._nextQuery = {
-            orderby: this.state.orderby,
-            filter: this.state.filter,
-            select: this.state.select
-        };
         this.load();
     }
 
-    load(): void {
-        this.props.adapter.find(this._nextQuery).then(data => {
-            this._nextQuery = data.next;
+    load() {
+        this.props.adapter.find(this.state.query).then(data => {
             this.setState((prevState, props) => {
                 prevState.entities = data.rows;
+                prevState.query = data.next;
                 prevState.selection = [];
                 return prevState;
             });
@@ -77,6 +65,28 @@ export class Grid extends React.Component<IGridProps, IGridState> {
             }
             return prevState;
         });
+    }
+
+    handleSort(key: string) {
+        this.setState((prevState, props) => {
+            delete prevState.query.skip;
+            delete prevState.query.top;
+            var query = prevState.query;
+            if (!query.orderby || query.orderby.key != key) {
+                query.orderby = {
+                    key: key,
+                    asc: true
+                };
+            } else {
+                if (query.orderby.asc == true) {
+                    query.orderby.asc = false;
+                } else {
+                    query.orderby = undefined;
+                }
+            }
+            prevState.query = query;
+            return prevState;
+        }, () => { this.load(); });
     }
 
     handleScroll(e: React.UIEvent) {
@@ -110,7 +120,9 @@ export class Grid extends React.Component<IGridProps, IGridState> {
                         <Header
                             columns={this.props.columns}
                             selected={allSelected}
-                            onSelectAll={ () => this.handleSelectAll() } />
+                            onSelectAll={ () => this.handleSelectAll() }
+                            sorting={this.state.query.orderby}
+                            onSort={ (key) => this.handleSort(key) } />
                         <div className="moravia-grid-body">
                             {
                                 this.state.entities.map((entity, index) => {

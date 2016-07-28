@@ -89,21 +89,25 @@
 .moravia-grid .moravia-grid-header-cell:last-child {
   border-right: none;
 }
+.moravia-grid .moravia-grid-header-cell.sortable {
+  cursor: pointer;
+}
 .moravia-grid .moravia-grid-header-cell .title {
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
   float: left;
-  padding: 0 5px;
 }
-.moravia-grid .moravia-grid-header-cell .icon-sort,
-.moravia-grid .moravia-grid-header-cell .icon-sort-up,
-.moravia-grid .moravia-grid-header-cell .icon-sort-down {
+.moravia-grid .moravia-grid-header-cell .icon-sort {
   float: left;
-  color: #ccc;
   text-align: center;
-  cursor: pointer;
-  padding-right: 5px;
+  color: #ccc;
+}
+.moravia-grid .moravia-grid-header-cell .icon-sort-down,
+.moravia-grid .moravia-grid-header-cell .icon-sort-up {
+  float: left;
+  text-align: center;
+  color: #009ee1;
 }
 .moravia-grid .moravia-grid-row-cell {
   -moz-box-sizing: border-box;
