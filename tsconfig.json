@@ -6,7 +6,8 @@
         "removeComments": true,
         "noLib": false,
         "preserveConstEnums": true,
-        "suppressImplicitAnyIndexErrors": true
+        "suppressImplicitAnyIndexErrors": true,
+        "outFile": "./dist/react-grid.js"
     },
     "files": [
         "./typings/index.d.ts",
