@@ -50,14 +50,7 @@
 	var adapter_1 = __webpack_require__(3);
 	var grid_1 = __webpack_require__(4);
 	var adapter = new adapter_1.Adapter();
-	var columns = [
-	    { key: "id", width: 70 },
-	    { key: "firstName", width: 120, sortable: true },
-	    { key: "lastName", width: 120, sortable: true },
-	    { key: "age", width: 70 },
-	    { key: "address", width: 200 }
-	];
-	ReactDOM.render(React.createElement(grid_1.Grid, {adapter: adapter, columns: columns}), document.getElementById("example"));
+	ReactDOM.render(React.createElement(grid_1.Grid, {adapter: adapter}), document.getElementById("example"));
 
 
 /***/ },
@@ -94,6 +87,13 @@
 	            return { top: Adapter.DEFAULT_TOP, skip: 0 };
 	        }
 	    };
+	    Object.defineProperty(Adapter.prototype, "columns", {
+	        get: function () {
+	            return Adapter.COLUMNS;
+	        },
+	        enumerable: true,
+	        configurable: true
+	    });
 	    Adapter.prototype.find = function (query) {
 	        query = this.defaultQuery(query);
 	        return new Promise(function (resolve, reject) {
@@ -113,6 +113,13 @@
 	    };
 	    Adapter.DEFAULT_TOP = 25;
 	    Adapter.CHANCE_SEED = 1337;
+	    Adapter.COLUMNS = [
+	        { key: "id", width: 70 },
+	        { key: "firstName", width: 120, sortable: true },
+	        { key: "lastName", width: 120, sortable: true },
+	        { key: "age", width: 70 },
+	        { key: "address", width: 200 }
+	    ];
 	    return Adapter;
 	}());
 	exports.Adapter = Adapter;
@@ -229,7 +236,7 @@
 	    Grid.prototype.render = function () {
 	        var _this = this;
 	        var allSelected = this.state.selection.length > 0;
-	        return (React.createElement("div", {className: "moravia-grid"}, React.createElement("div", {className: "moravia-grid-scrollable", onScroll: function (e) { return _this.handleScroll(e); }}, React.createElement("div", {className: "moravia-grid-inner"}, React.createElement(header_1.Header, {columns: this.props.columns, selected: allSelected, onSelectAll: function () { return _this.handleSelectAll(); }, sorting: this.state.sorting, onSort: function (key) { return _this.handleSort(key); }}), React.createElement(body_1.Body, {columns: this.props.columns, entities: this.state.entities, selection: this.state.selection, onSelect: function (index) { return _this.handleSelect(index); }})))));
+	        return (React.createElement("div", {className: "moravia-grid"}, React.createElement("div", {className: "moravia-grid-scrollable", onScroll: function (e) { return _this.handleScroll(e); }}, React.createElement("div", {className: "moravia-grid-inner"}, React.createElement(header_1.Header, {columns: this.props.adapter.columns, selected: allSelected, onSelectAll: function () { return _this.handleSelectAll(); }, sorting: this.state.sorting, onSort: function (key) { return _this.handleSort(key); }}), React.createElement(body_1.Body, {columns: this.props.adapter.columns, entities: this.state.entities, selection: this.state.selection, onSelect: function (index) { return _this.handleSelect(index); }})))));
 	    };
 	    return Grid;
 	}(React.Component));

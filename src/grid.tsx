@@ -1,13 +1,12 @@
 /// <reference path="../typings/index.d.ts" />
 
 import * as React from "react";
-import { IEntity, IQuery, IFilter, ISorting, IColumn, IAdapter } from "./adapter";
+import { IEntity, IQuery, IFilter, ISorting, IAdapter } from "./adapter";
 import { Header } from "./header";
 import { Body } from "./body";
 
 export interface IGridProps {
     adapter: IAdapter;
-    columns: IColumn[];
 }
 
 export interface IGridState {
@@ -119,13 +118,13 @@ export class Grid extends React.Component<IGridProps, IGridState> {
                 <div className="moravia-grid-scrollable" onScroll={ (e) => this.handleScroll(e) }>
                     <div className="moravia-grid-inner">
                         <Header
-                            columns={this.props.columns}
+                            columns={this.props.adapter.columns}
                             selected={allSelected}
                             onSelectAll={ () => this.handleSelectAll() }
                             sorting={this.state.sorting}
                             onSort={ (key) => this.handleSort(key) } />
                         <Body
-                            columns={this.props.columns}
+                            columns={this.props.adapter.columns}
                             entities={this.state.entities}
                             selection={this.state.selection}
                             onSelect={ (index) => this.handleSelect(index) } />

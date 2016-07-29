@@ -17,3 +17,4 @@
 - [ ] Column ordering
 - [ ] Column visibility
 - [ ] Store Grid state in localStorage
+- [ ] OData adapter

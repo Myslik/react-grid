@@ -32,12 +32,21 @@ export interface IQuery {
 }
 
 export interface IAdapter {
+    columns: IColumn[];
     find(query?: IQuery): Promise<IEntity[]>;
 }
 
 export class Adapter implements IAdapter {
     public static DEFAULT_TOP: number = 25;
     public static CHANCE_SEED: number = 1337;
+
+    public static COLUMNS: IColumn[] = [
+        { key: "id", width: 70 },
+        { key: "firstName", width: 120, sortable: true },
+        { key: "lastName", width: 120, sortable: true },
+        { key: "age", width: 70 },
+        { key: "address", width: 200 }
+    ];
 
     private defaultQuery(query?: IQuery): IQuery {
         if (!!query) {
@@ -51,6 +60,10 @@ export class Adapter implements IAdapter {
         } else {
             return { top: Adapter.DEFAULT_TOP, skip: 0 };
         }
+    }
+
+    get columns(): IColumn[] {
+        return Adapter.COLUMNS;
     }
 
     public find(query?: IQuery): Promise<IEntity[]> {
