@@ -47,9 +47,9 @@
 	"use strict";
 	var React = __webpack_require__(1);
 	var ReactDOM = __webpack_require__(2);
-	var adapter_1 = __webpack_require__(3);
-	var grid_1 = __webpack_require__(4);
-	var adapter = new adapter_1.Adapter();
+	var demo_1 = __webpack_require__(3);
+	var grid_1 = __webpack_require__(6);
+	var adapter = new demo_1.DemoAdapter();
 	ReactDOM.render(React.createElement(grid_1.Grid, {adapter: adapter}), document.getElementById("example"));
 
 
@@ -67,6 +67,66 @@
 
 /***/ },
 /* 3 */
+/***/ function(module, exports, __webpack_require__) {
+
+	"use strict";
+	var __extends = (this && this.__extends) || function (d, b) {
+	    for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p];
+	    function __() { this.constructor = d; }
+	    d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
+	};
+	var chance_1 = __webpack_require__(4);
+	var adapter_1 = __webpack_require__(5);
+	var DemoAdapter = (function (_super) {
+	    __extends(DemoAdapter, _super);
+	    function DemoAdapter() {
+	        _super.apply(this, arguments);
+	    }
+	    Object.defineProperty(DemoAdapter.prototype, "columns", {
+	        get: function () {
+	            return DemoAdapter.COLUMNS;
+	        },
+	        enumerable: true,
+	        configurable: true
+	    });
+	    DemoAdapter.prototype.find = function (query) {
+	        query = this.defaultQuery(query);
+	        return new Promise(function (resolve, reject) {
+	            var chance = new chance_1.Chance(DemoAdapter.CHANCE_SEED);
+	            var rows = [];
+	            for (var i = 1; i <= query.top; i++) {
+	                rows.push({
+	                    id: i,
+	                    firstName: chance.first(),
+	                    lastName: chance.last(),
+	                    age: chance.age(),
+	                    address: chance.address()
+	                });
+	            }
+	            resolve(rows);
+	        });
+	    };
+	    DemoAdapter.CHANCE_SEED = 1337;
+	    DemoAdapter.COLUMNS = [
+	        { key: "id", width: 70 },
+	        { key: "firstName", width: 120, sortable: true },
+	        { key: "lastName", width: 120, sortable: true },
+	        { key: "age", width: 70 },
+	        { key: "address", width: 200 }
+	    ];
+	    return DemoAdapter;
+	}(adapter_1.Adapter));
+	exports.DemoAdapter = DemoAdapter;
+
+
+/***/ },
+/* 4 */
+/***/ function(module, exports) {
+
+	module.exports = Chance;
+
+/***/ },
+/* 5 */
 /***/ function(module, exports) {
 
 	"use strict";
@@ -87,46 +147,14 @@
 	            return { top: Adapter.DEFAULT_TOP, skip: 0 };
 	        }
 	    };
-	    Object.defineProperty(Adapter.prototype, "columns", {
-	        get: function () {
-	            return Adapter.COLUMNS;
-	        },
-	        enumerable: true,
-	        configurable: true
-	    });
-	    Adapter.prototype.find = function (query) {
-	        query = this.defaultQuery(query);
-	        return new Promise(function (resolve, reject) {
-	            var chance = new Chance(Adapter.CHANCE_SEED);
-	            var rows = [];
-	            for (var i = 1; i <= query.top; i++) {
-	                rows.push({
-	                    id: i,
-	                    firstName: chance.first(),
-	                    lastName: chance.last(),
-	                    age: chance.age(),
-	                    address: chance.address()
-	                });
-	            }
-	            resolve(rows);
-	        });
-	    };
 	    Adapter.DEFAULT_TOP = 25;
-	    Adapter.CHANCE_SEED = 1337;
-	    Adapter.COLUMNS = [
-	        { key: "id", width: 70 },
-	        { key: "firstName", width: 120, sortable: true },
-	        { key: "lastName", width: 120, sortable: true },
-	        { key: "age", width: 70 },
-	        { key: "address", width: 200 }
-	    ];
 	    return Adapter;
 	}());
 	exports.Adapter = Adapter;
 
 
 /***/ },
-/* 4 */
+/* 6 */
 /***/ function(module, exports, __webpack_require__) {
 
 	"use strict";
@@ -136,8 +164,8 @@
 	    d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
 	};
 	var React = __webpack_require__(1);
-	var header_1 = __webpack_require__(5);
-	var body_1 = __webpack_require__(7);
+	var header_1 = __webpack_require__(7);
+	var body_1 = __webpack_require__(9);
 	var Grid = (function (_super) {
 	    __extends(Grid, _super);
 	    function Grid(props) {
@@ -244,7 +272,7 @@
 
 
 /***/ },
-/* 5 */
+/* 7 */
 /***/ function(module, exports, __webpack_require__) {
 
 	"use strict";
@@ -254,7 +282,7 @@
 	    d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
 	};
 	var React = __webpack_require__(1);
-	var cell_1 = __webpack_require__(6);
+	var cell_1 = __webpack_require__(8);
 	var Header = (function (_super) {
 	    __extends(Header, _super);
 	    function Header() {
@@ -289,7 +317,7 @@
 
 
 /***/ },
-/* 6 */
+/* 8 */
 /***/ function(module, exports, __webpack_require__) {
 
 	"use strict";
@@ -394,7 +422,7 @@
 
 
 /***/ },
-/* 7 */
+/* 9 */
 /***/ function(module, exports, __webpack_require__) {
 
 	"use strict";
@@ -404,7 +432,7 @@
 	    d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
 	};
 	var React = __webpack_require__(1);
-	var row_1 = __webpack_require__(8);
+	var row_1 = __webpack_require__(10);
 	var Body = (function (_super) {
 	    __extends(Body, _super);
 	    function Body() {
@@ -423,7 +451,7 @@
 
 
 /***/ },
-/* 8 */
+/* 10 */
 /***/ function(module, exports, __webpack_require__) {
 
 	"use strict";
@@ -433,7 +461,7 @@
 	    d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
 	};
 	var React = __webpack_require__(1);
-	var cell_1 = __webpack_require__(6);
+	var cell_1 = __webpack_require__(8);
 	var Row = (function (_super) {
 	    __extends(Row, _super);
 	    function Row() {

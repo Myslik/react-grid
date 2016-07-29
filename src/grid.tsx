@@ -1,7 +1,7 @@
 /// <reference path="../typings/index.d.ts" />
 
 import * as React from "react";
-import { IEntity, IQuery, IFilter, ISorting, IAdapter } from "./adapter";
+import { IEntity, IColumn, IQuery, IFilter, ISorting, IAdapter } from "./adapter";
 import { Header } from "./header";
 import { Body } from "./body";
 
@@ -12,6 +12,7 @@ export interface IGridProps {
 export interface IGridState {
     entities: IEntity[];
     selection: string[];
+    columns: IColumn[];
     sorting?: ISorting;
     filter?: IFilter[];
     select?: string[];
@@ -22,21 +23,32 @@ export class Grid extends React.Component<IGridProps, IGridState> {
         super(props);
         this.state = {
             entities: [],
-            selection: []
+            selection: [],
+            columns: []
         };
+        this.loadColumns();
     }
 
-    componentDidMount(): void {
-        this.load();
-    }
-
-    load() {
-        var query: IQuery = {
+    buildQuery(): IQuery {
+        return {
             skip: this.state.entities.length,
             sorting: this.state.sorting,
             filter: this.state.filter,
             select: this.state.select
         };
+    }
+
+    loadColumns() {
+        this.props.adapter.getColumns().then(columns => {
+            this.setState((prevState, props) => {
+                prevState.columns = columns;
+                return prevState;
+            }, () => { this.load(); });
+        });
+    }
+
+    load() {
+        var query = this.buildQuery();
         this.props.adapter.find(query).then(entities => {
             this.setState((prevState, props) => {
                 prevState.entities = entities;
@@ -118,13 +130,13 @@ export class Grid extends React.Component<IGridProps, IGridState> {
                 <div className="moravia-grid-scrollable" onScroll={ (e) => this.handleScroll(e) }>
                     <div className="moravia-grid-inner">
                         <Header
-                            columns={this.props.adapter.columns}
+                            columns={this.state.columns}
                             selected={allSelected}
                             onSelectAll={ () => this.handleSelectAll() }
                             sorting={this.state.sorting}
                             onSort={ (key) => this.handleSort(key) } />
                         <Body
-                            columns={this.props.adapter.columns}
+                            columns={this.state.columns}
                             entities={this.state.entities}
                             selection={this.state.selection}
                             onSelect={ (index) => this.handleSelect(index) } />

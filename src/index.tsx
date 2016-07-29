@@ -2,10 +2,10 @@
 
 import * as React from "react";
 import * as ReactDOM from "react-dom";
-import { Adapter } from "./adapter";
+import { DemoAdapter } from "./demo";
 import { Grid } from "./grid";
 
-var adapter = new Adapter();
+var adapter = new DemoAdapter();
 
 ReactDOM.render(    
     <Grid adapter={adapter} />,

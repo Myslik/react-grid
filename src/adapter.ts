@@ -32,23 +32,14 @@ export interface IQuery {
 }
 
 export interface IAdapter {
-    columns: IColumn[];
+    getColumns(): Promise<IColumn[]>;
     find(query?: IQuery): Promise<IEntity[]>;
 }
 
-export class Adapter implements IAdapter {
+export abstract class Adapter implements IAdapter {
     public static DEFAULT_TOP: number = 25;
-    public static CHANCE_SEED: number = 1337;
 
-    public static COLUMNS: IColumn[] = [
-        { key: "id", width: 70 },
-        { key: "firstName", width: 120, sortable: true },
-        { key: "lastName", width: 120, sortable: true },
-        { key: "age", width: 70 },
-        { key: "address", width: 200 }
-    ];
-
-    private defaultQuery(query?: IQuery): IQuery {
+    protected defaultQuery(query?: IQuery): IQuery {
         if (!!query) {
             return {
                 top: query.top || Adapter.DEFAULT_TOP,
@@ -62,25 +53,6 @@ export class Adapter implements IAdapter {
         }
     }
 
-    get columns(): IColumn[] {
-        return Adapter.COLUMNS;
-    }
-
-    public find(query?: IQuery): Promise<IEntity[]> {
-        query = this.defaultQuery(query);
-        return new Promise<IEntity[]>((resolve, reject) => {
-            var chance = new Chance(Adapter.CHANCE_SEED);
-            var rows = [];
-            for (var i = 1; i <= query.top; i++) {
-                rows.push({
-                    id: i,
-                    firstName: chance.first(),
-                    lastName: chance.last(),
-                    age: chance.age(),
-                    address: chance.address()
-                });
-            }
-            resolve(rows);
-        });
-    }
+    abstract getColumns(): Promise<IColumn[]>;
+    abstract find(query?: IQuery): Promise<IEntity[]>;
 }
