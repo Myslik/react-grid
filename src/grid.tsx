@@ -1,9 +1,7 @@
 /// <reference path="../typings/index.d.ts" />
 
 import * as React from "react";
-import { IEntity } from "./entity";
-import { IColumn } from "./column";
-import { Query, Filter, Sorting, IAdapter } from "./adapter";
+import { IEntity, IQuery, IFilter, ISorting, IColumn, IAdapter } from "./adapter";
 import { Header } from "./header";
 import { Row } from "./row";
 
@@ -15,7 +13,7 @@ export interface IGridProps {
 export interface IGridState {
     entities: IEntity[];
     selection: string[];
-    query?: Query;
+    query?: IQuery;
 }
 
 export class Grid extends React.Component<IGridProps, IGridState> {
@@ -115,7 +113,7 @@ export class Grid extends React.Component<IGridProps, IGridState> {
         var allSelected = this.state.selection.length > 0;
         return (
             <div className="moravia-grid">
-                <div className="moravia-grid-scrollable" onScroll={this.handleScroll.bind(this) }>
+                <div className="moravia-grid-scrollable" onScroll={ (e) => this.handleScroll(e) }>
                     <div className="moravia-grid-inner">
                         <Header
                             columns={this.props.columns}

@@ -1,8 +1,7 @@
 /// <reference path="../typings/index.d.ts" />
 
 import * as React from "react";
-import { Sorting } from "./adapter";
-import { IColumn } from "./column";
+import { ISorting, IColumn } from "./adapter";
 import { SortState, CheckboxHeaderCell, HeaderCell } from "./cell";
 
 export interface IHeaderProps {
@@ -10,7 +9,7 @@ export interface IHeaderProps {
     selected: boolean;
     onSelectAll: () => void;
     onSort: (key: string) => void;
-    sorting: Sorting;
+    sorting: ISorting;
 }
 
 export class Header extends React.Component<IHeaderProps, void> {

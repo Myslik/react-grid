@@ -10,9 +10,7 @@
     },
     "files": [
         "./typings/index.d.ts",
-        "./src/entity.ts",
         "./src/adapter.ts",
-        "./src/column.ts",
         "./src/cell.tsx",
         "./src/row.tsx",
         "./src/header.tsx",

@@ -1,40 +1,50 @@
 /// <reference path="../typings/globals/es6-promise/index.d.ts" />
 
-import { IEntity } from "./entity";
-
-export interface Query {
-    skip?: number;
-    top?: number;
-    orderby?: Sorting;
-    filter?: Filter[];
-    select?: string[];
+export interface IEntity {
+    [key: string]: any;
+    id: string;
 }
 
-export interface Filter {
+export interface IColumn {
+    key: string;
+    title?: string;
+    width?: number;
+    sortable?: boolean;
+}
+
+export interface ISorting {
+    key: string;
+    asc?: boolean;
+}
+
+export interface IFilter {
     key: string;
     operator: string;
     value: string;
 }
 
-export interface Sorting {
-    key: string;
-    asc?: boolean;
+export interface IQuery {
+    skip?: number;
+    top?: number;
+    orderby?: ISorting;
+    filter?: IFilter[];
+    select?: string[];
 }
 
-export interface Data {
+export interface IData {
     rows: IEntity[];
-    next?: Query;
+    next?: IQuery;
 }
 
 export interface IAdapter {
-    find(query?: Query): Promise<Data>;
+    find(query?: IQuery): Promise<IData>;
 }
 
 export class Adapter implements IAdapter {
     public static DEFAULT_TOP: number = 25;
     public static CHANCE_SEED: number = 1337;
 
-    private defaultQuery(query?: Query): Query {
+    private defaultQuery(query?: IQuery): IQuery {
         if (!!query) {
             return {
                 top: query.top || Adapter.DEFAULT_TOP,
@@ -48,9 +58,9 @@ export class Adapter implements IAdapter {
         }
     }
 
-    public find(query?: Query): Promise<Data> {
+    public find(query?: IQuery): Promise<IData> {
         query = this.defaultQuery(query);
-        return new Promise<Data>((resolve, reject) => {
+        return new Promise<IData>((resolve, reject) => {
             var chance = new Chance(Adapter.CHANCE_SEED);
             var rows = [];
             for (var i = 1; i <= query.top; i++) {

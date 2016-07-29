@@ -1,8 +1,7 @@
 /// <reference path="../typings/index.d.ts" />
 
 import * as React from "react";
-import { IEntity } from "./entity";
-import { IColumn } from "./column";
+import { IEntity, IColumn } from "./adapter";
 import { CheckboxCell, Cell } from "./cell";
 
 export interface IRowProps {
