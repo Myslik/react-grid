@@ -26,18 +26,13 @@ export interface IFilter {
 export interface IQuery {
     skip?: number;
     top?: number;
-    orderby?: ISorting;
+    sorting?: ISorting;
     filter?: IFilter[];
     select?: string[];
 }
 
-export interface IData {
-    rows: IEntity[];
-    next?: IQuery;
-}
-
 export interface IAdapter {
-    find(query?: IQuery): Promise<IData>;
+    find(query?: IQuery): Promise<IEntity[]>;
 }
 
 export class Adapter implements IAdapter {
@@ -49,7 +44,7 @@ export class Adapter implements IAdapter {
             return {
                 top: query.top || Adapter.DEFAULT_TOP,
                 skip: query.skip || 0,
-                orderby: query.orderby,
+                sorting: query.sorting,
                 filter: query.filter,
                 select: query.select
             }
@@ -58,9 +53,9 @@ export class Adapter implements IAdapter {
         }
     }
 
-    public find(query?: IQuery): Promise<IData> {
+    public find(query?: IQuery): Promise<IEntity[]> {
         query = this.defaultQuery(query);
-        return new Promise<IData>((resolve, reject) => {
+        return new Promise<IEntity[]>((resolve, reject) => {
             var chance = new Chance(Adapter.CHANCE_SEED);
             var rows = [];
             for (var i = 1; i <= query.top; i++) {
@@ -72,8 +67,7 @@ export class Adapter implements IAdapter {
                     address: chance.address()
                 });
             }
-            query.skip += query.top;
-            resolve({ rows: rows, next: query });
+            resolve(rows);
         });
     }
 }

@@ -85,7 +85,7 @@
 	            return {
 	                top: query.top || Adapter.DEFAULT_TOP,
 	                skip: query.skip || 0,
-	                orderby: query.orderby,
+	                sorting: query.sorting,
 	                filter: query.filter,
 	                select: query.select
 	            };
@@ -108,8 +108,7 @@
 	                    address: chance.address()
 	                });
 	            }
-	            query.skip += query.top;
-	            resolve({ rows: rows, next: query });
+	            resolve(rows);
 	        });
 	    };
 	    Adapter.DEFAULT_TOP = 25;
@@ -131,15 +130,14 @@
 	};
 	var React = __webpack_require__(1);
 	var header_1 = __webpack_require__(5);
-	var row_1 = __webpack_require__(7);
+	var body_1 = __webpack_require__(7);
 	var Grid = (function (_super) {
 	    __extends(Grid, _super);
 	    function Grid(props) {
 	        _super.call(this, props);
 	        this.state = {
 	            entities: [],
-	            selection: [],
-	            query: {}
+	            selection: []
 	        };
 	    }
 	    Grid.prototype.componentDidMount = function () {
@@ -147,10 +145,15 @@
 	    };
 	    Grid.prototype.load = function () {
 	        var _this = this;
-	        this.props.adapter.find(this.state.query).then(function (data) {
+	        var query = {
+	            skip: this.state.entities.length,
+	            sorting: this.state.sorting,
+	            filter: this.state.filter,
+	            select: this.state.select
+	        };
+	        this.props.adapter.find(query).then(function (entities) {
 	            _this.setState(function (prevState, props) {
-	                prevState.entities = data.rows;
-	                prevState.query = data.next;
+	                prevState.entities = entities;
 	                prevState.selection = [];
 	                return prevState;
 	            });
@@ -184,24 +187,21 @@
 	    Grid.prototype.handleSort = function (key) {
 	        var _this = this;
 	        this.setState(function (prevState, props) {
-	            delete prevState.query.skip;
-	            delete prevState.query.top;
-	            var query = prevState.query;
-	            if (!query.orderby || query.orderby.key != key) {
-	                query.orderby = {
+	            if (!prevState.sorting || prevState.sorting.key != key) {
+	                prevState.sorting = {
 	                    key: key,
 	                    asc: true
 	                };
 	            }
 	            else {
-	                if (query.orderby.asc == true) {
-	                    query.orderby.asc = false;
+	                if (prevState.sorting.asc == true) {
+	                    prevState.sorting.asc = false;
 	                }
 	                else {
-	                    query.orderby = undefined;
+	                    prevState.sorting = undefined;
 	                }
 	            }
-	            prevState.query = query;
+	            prevState.entities = [];
 	            return prevState;
 	        }, function () { _this.load(); });
 	    };
@@ -229,10 +229,7 @@
 	    Grid.prototype.render = function () {
 	        var _this = this;
 	        var allSelected = this.state.selection.length > 0;
-	        return (React.createElement("div", {className: "moravia-grid"}, React.createElement("div", {className: "moravia-grid-scrollable", onScroll: this.handleScroll.bind(this)}, React.createElement("div", {className: "moravia-grid-inner"}, React.createElement(header_1.Header, {columns: this.props.columns, selected: allSelected, onSelectAll: function () { return _this.handleSelectAll(); }, sorting: this.state.query.orderby, onSort: function (key) { return _this.handleSort(key); }}), React.createElement("div", {className: "moravia-grid-body"}, this.state.entities.map(function (entity, index) {
-	            var selected = _this.state.selection.indexOf(entity.id) != -1;
-	            return (React.createElement(row_1.Row, {key: entity.id, entity: entity, columns: _this.props.columns, selected: selected, onSelect: function () { return _this.handleSelect(index); }}));
-	        }))))));
+	        return (React.createElement("div", {className: "moravia-grid"}, React.createElement("div", {className: "moravia-grid-scrollable", onScroll: function (e) { return _this.handleScroll(e); }}, React.createElement("div", {className: "moravia-grid-inner"}, React.createElement(header_1.Header, {columns: this.props.columns, selected: allSelected, onSelectAll: function () { return _this.handleSelectAll(); }, sorting: this.state.sorting, onSort: function (key) { return _this.handleSort(key); }}), React.createElement(body_1.Body, {columns: this.props.columns, entities: this.state.entities, selection: this.state.selection, onSelect: function (index) { return _this.handleSelect(index); }})))));
 	    };
 	    return Grid;
 	}(React.Component));
@@ -391,6 +388,35 @@
 
 /***/ },
 /* 7 */
+/***/ function(module, exports, __webpack_require__) {
+
+	"use strict";
+	var __extends = (this && this.__extends) || function (d, b) {
+	    for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p];
+	    function __() { this.constructor = d; }
+	    d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
+	};
+	var React = __webpack_require__(1);
+	var row_1 = __webpack_require__(8);
+	var Body = (function (_super) {
+	    __extends(Body, _super);
+	    function Body() {
+	        _super.apply(this, arguments);
+	    }
+	    Body.prototype.render = function () {
+	        var _this = this;
+	        return (React.createElement("div", {className: "moravia-grid-body"}, this.props.entities.map(function (entity, index) {
+	            var selected = _this.props.selection.indexOf(entity.id) != -1;
+	            return (React.createElement(row_1.Row, {key: entity.id, entity: entity, columns: _this.props.columns, selected: selected, onSelect: function () { return _this.props.onSelect(index); }}));
+	        })));
+	    };
+	    return Body;
+	}(React.Component));
+	exports.Body = Body;
+
+
+/***/ },
+/* 8 */
 /***/ function(module, exports, __webpack_require__) {
 
 	"use strict";

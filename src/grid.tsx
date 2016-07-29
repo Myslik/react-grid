@@ -3,7 +3,7 @@
 import * as React from "react";
 import { IEntity, IQuery, IFilter, ISorting, IColumn, IAdapter } from "./adapter";
 import { Header } from "./header";
-import { Row } from "./row";
+import { Body } from "./body";
 
 export interface IGridProps {
     adapter: IAdapter;
@@ -13,7 +13,9 @@ export interface IGridProps {
 export interface IGridState {
     entities: IEntity[];
     selection: string[];
-    query?: IQuery;
+    sorting?: ISorting;
+    filter?: IFilter[];
+    select?: string[];
 }
 
 export class Grid extends React.Component<IGridProps, IGridState> {
@@ -21,8 +23,7 @@ export class Grid extends React.Component<IGridProps, IGridState> {
         super(props);
         this.state = {
             entities: [],
-            selection: [],
-            query: {}
+            selection: []
         };
     }
 
@@ -31,10 +32,15 @@ export class Grid extends React.Component<IGridProps, IGridState> {
     }
 
     load() {
-        this.props.adapter.find(this.state.query).then(data => {
+        var query: IQuery = {
+            skip: this.state.entities.length,
+            sorting: this.state.sorting,
+            filter: this.state.filter,
+            select: this.state.select
+        };
+        this.props.adapter.find(query).then(entities => {
             this.setState((prevState, props) => {
-                prevState.entities = data.rows;
-                prevState.query = data.next;
+                prevState.entities = entities;
                 prevState.selection = [];
                 return prevState;
             });
@@ -67,22 +73,19 @@ export class Grid extends React.Component<IGridProps, IGridState> {
 
     handleSort(key: string) {
         this.setState((prevState, props) => {
-            delete prevState.query.skip;
-            delete prevState.query.top;
-            var query = prevState.query;
-            if (!query.orderby || query.orderby.key != key) {
-                query.orderby = {
+            if (!prevState.sorting || prevState.sorting.key != key) {
+                prevState.sorting = {
                     key: key,
                     asc: true
                 };
             } else {
-                if (query.orderby.asc == true) {
-                    query.orderby.asc = false;
+                if (prevState.sorting.asc == true) {
+                    prevState.sorting.asc = false;
                 } else {
-                    query.orderby = undefined;
+                    prevState.sorting = undefined;
                 }
             }
-            prevState.query = query;
+            prevState.entities = [];
             return prevState;
         }, () => { this.load(); });
     }
@@ -119,23 +122,13 @@ export class Grid extends React.Component<IGridProps, IGridState> {
                             columns={this.props.columns}
                             selected={allSelected}
                             onSelectAll={ () => this.handleSelectAll() }
-                            sorting={this.state.query.orderby}
+                            sorting={this.state.sorting}
                             onSort={ (key) => this.handleSort(key) } />
-                        <div className="moravia-grid-body">
-                            {
-                                this.state.entities.map((entity, index) => {
-                                    var selected = this.state.selection.indexOf(entity.id) != -1;
-                                    return (
-                                        <Row
-                                            key={entity.id}
-                                            entity={entity}
-                                            columns={this.props.columns}
-                                            selected={selected}
-                                            onSelect={ () => this.handleSelect(index) } />
-                                    );
-                                })
-                            }
-                        </div>
+                        <Body
+                            columns={this.props.columns}
+                            entities={this.state.entities}
+                            selection={this.state.selection}
+                            onSelect={ (index) => this.handleSelect(index) } />
                     </div>
                 </div>
             </div>

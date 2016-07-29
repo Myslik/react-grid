@@ -14,6 +14,7 @@
         "./src/cell.tsx",
         "./src/row.tsx",
         "./src/header.tsx",
+        "./src/body.tsx",
         "./src/grid.tsx",
         "./src/index.tsx"
     ]
