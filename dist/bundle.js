@@ -84,7 +84,7 @@
 	        return new es6_promise_1.Promise(function (resolve, reject) {
 	            var chance = chance_1.Chance.Chance();
 	            var rows = [];
-	            for (var i = 1; i < 25; i++) {
+	            for (var i = 1; i <= 25; i++) {
 	                rows.push({
 	                    id: i,
 	                    firstName: chance.first(),
@@ -9570,10 +9570,31 @@
 	            return prevState;
 	        });
 	    };
+	    Grid.prototype.handleScroll = function (e) {
+	        var scrollable = e.target;
+	        var scrollTop = scrollable.scrollTop;
+	        var scrollLeft = scrollable.scrollLeft;
+	        var header = scrollable.getElementsByClassName('moravia-grid-header')[0];
+	        var body = scrollable.getElementsByClassName('moravia-grid-body')[0];
+	        if (scrollTop != 0 || scrollLeft != 0) {
+	            body.style.marginTop = header.clientHeight + "px";
+	            header.style.position = "absolute";
+	            header.style.top = scrollTop + "px";
+	            header.style.left = "0";
+	            header.style.width = header.parentElement.clientWidth + "px";
+	        }
+	        else {
+	            body.style.marginTop = "0";
+	            header.style.position = "static";
+	            header.style.top = "auto";
+	            header.style.left = "auto";
+	            header.style.width = "auto";
+	        }
+	    };
 	    Grid.prototype.render = function () {
 	        var _this = this;
 	        var allSelected = this.state.selection.length > 0;
-	        return (React.createElement("div", {className: "moravia-grid"}, React.createElement("div", {className: "moravia-grid-scrollable"}, React.createElement("div", {className: "moravia-grid-inner"}, React.createElement(header_1.Header, {columns: this.props.columns, selected: allSelected, onSelectAll: function () { return _this.handleSelectAll(); }}), React.createElement("div", {className: "moravia-grid-body"}, this.state.entities.map(function (entity, index) {
+	        return (React.createElement("div", {className: "moravia-grid"}, React.createElement("div", {className: "moravia-grid-scrollable", onScroll: this.handleScroll.bind(this)}, React.createElement("div", {className: "moravia-grid-inner"}, React.createElement(header_1.Header, {columns: this.props.columns, selected: allSelected, onSelectAll: function () { return _this.handleSelectAll(); }}), React.createElement("div", {className: "moravia-grid-body"}, this.state.entities.map(function (entity, index) {
 	            var selected = _this.state.selection.indexOf(entity.id) != -1;
 	            return (React.createElement(row_1.Row, {key: entity.id, entity: entity, columns: _this.props.columns, selected: selected, onSelect: function () { return _this.handleSelect(index); }}));
 	        }))))));

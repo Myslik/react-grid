@@ -4,6 +4,8 @@
 @grid-header-color: #666;
 @grid-header-bg: #fafafa;
 @grid-active: #d9edf7;
+@grid-icon-color: #ccc;
+@grid-icon-highlight: #009ee1;
 @grid-cell-padding: 5px;
 
 .border-box() {
@@ -99,6 +101,30 @@
         &:last-child {
             border-right: none;
         }
+
+		&.sortable {
+			cursor: pointer;
+		}
+
+		.title {
+			white-space: nowrap;
+    		overflow: hidden;
+    		text-overflow: ellipsis;
+    		float: left;
+		}
+
+		.icon-sort {
+			float: left;
+    		text-align: center;
+			color: @grid-icon-color;
+		}
+
+		.icon-sort-down,
+		.icon-sort-up {
+			float: left;
+    		text-align: center;
+			color: @grid-icon-highlight;
+		}
 	}
 	
 	.moravia-grid-row-cell {
