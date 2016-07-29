@@ -2,10 +2,10 @@
 
 import * as React from "react";
 import * as ReactDOM from "react-dom";
-import { DemoAdapter } from "./demo";
+import { ODataAdapter } from "./odata";
 import { Grid } from "./grid";
 
-var adapter = new DemoAdapter();
+var adapter = new ODataAdapter();
 
 ReactDOM.render(    
     <Grid adapter={adapter} />,

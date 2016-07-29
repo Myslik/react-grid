@@ -16,6 +16,8 @@
         "./src/header.tsx",
         "./src/body.tsx",
         "./src/grid.tsx",
+        "./src/odata.ts",
+        "./src/demo.ts",
         "./src/index.tsx"
     ]
 }
