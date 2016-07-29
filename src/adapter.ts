@@ -1,8 +1,6 @@
 /// <reference path="../typings/globals/es6-promise/index.d.ts" />
 
 import { IEntity } from "./entity";
-import { Promise } from "es6-promise";
-import { Chance } from "chance";
 
 export interface Query {
     skip?: number;
@@ -53,7 +51,7 @@ export class Adapter implements IAdapter {
     public find(query?: Query): Promise<Data> {
         query = this.defaultQuery(query);
         return new Promise<Data>((resolve, reject) => {
-            var chance = Chance.Chance(Adapter.CHANCE_SEED);
+            var chance = new Chance(Adapter.CHANCE_SEED);
             var rows = [];
             for (var i = 1; i <= query.top; i++) {
                 rows.push({

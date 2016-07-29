@@ -1,7 +1,7 @@
 module.exports = {
     entry: "./src/index.tsx",
     output: {
-        filename: "./dist/bundle.js",
+        filename: "./dist/react-grid.js",
     },
 
     // Enable sourcemaps for debugging webpack's output.
