@@ -43,22 +43,6 @@ export interface IAdapter {
 }
 
 export abstract class Adapter implements IAdapter {
-    public static DEFAULT_TOP: number = 25;
-
-    protected defaultQuery(query?: IQuery): IQuery {
-        if (!!query) {
-            return {
-                top: query.top || Adapter.DEFAULT_TOP,
-                skip: query.skip || 0,
-                sorting: query.sorting,
-                filter: query.filter,
-                select: query.select
-            }
-        } else {
-            return { top: Adapter.DEFAULT_TOP, skip: 0 };
-        }
-    }
-
     abstract getColumns(): Promise<IColumn[]>;
     abstract find(query?: IQuery): Promise<IEntity[]>;
 }

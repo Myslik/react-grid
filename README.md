@@ -13,9 +13,9 @@
 - [x] Add fontello customized bundle
 - [x] Sorting
 - [x] Cell renderers
+- [x] OData adapter
 - [ ] Filtering
 - [ ] Infinite scrolling
 - [ ] Column ordering
 - [ ] Column visibility
 - [ ] Store Grid state in localStorage
-- [ ] OData adapter

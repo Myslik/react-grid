@@ -21,11 +21,10 @@ export class DemoAdapter extends Adapter {
     }
 
     public find(query?: IQuery): Promise<IEntity[]> {
-        query = this.defaultQuery(query);
         return new Promise<IEntity[]>((resolve, reject) => {
             var chance = new Chance(DemoAdapter.CHANCE_SEED);
             var rows = [];
-            for (var i = 1; i <= query.top; i++) {
+            for (var i = 1; i <= 20; i++) {
                 rows.push({
                     id: i,
                     firstName: chance.first(),

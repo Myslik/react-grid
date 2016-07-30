@@ -30,11 +30,33 @@ export class ODataAdapter extends Adapter {
         });
     }
 
+    protected buildUri(uri: string, query: IQuery): string {
+        if (!!query) {
+            var buffer: string[] = [];
+            if (!!query.sorting) {
+                buffer.push("$orderby=" + query.sorting.key + (query.sorting.asc === false ? " desc" : " asc"));
+            }
+            if (!!query.select) {
+                buffer.push("$select=" + query.select.join(", "));
+            }
+            if (!!query.top) {
+                buffer.push("$top=" + query.top);
+            }
+            if (!!query.skip) {
+                buffer.push("$skip=" + query.skip);
+            }
+            if (buffer.length > 0) {
+                uri = uri + "?" + buffer.join("&");
+            }
+        }
+        return uri;
+    }
+
     public find(query?: IQuery): Promise<IEntity[]> {
-        query = this.defaultQuery(query);
+        var uri = this.buildUri(ODataAdapter.URI, query);
         return new Promise<IEntity[]>((resolve, reject) => {
             var request = new XMLHttpRequest();
-            request.open("GET", ODataAdapter.URI, true);
+            request.open("GET", uri, true);
             request.onload = () => {
                 if (request.status >= 200 && request.status < 400) {
                     var response = <ODataResponse>JSON.parse(request.responseText);
