@@ -70,10 +70,19 @@ export class HeaderCell extends React.Component<IHeaderCellProps, any> {
         sortState: SortState.Disabled
     };
 
+    get sortEnabled(): boolean {
+        return this.props.sortState != SortState.Disabled;
+    }
+
+    handleSort() {
+        if (this.sortEnabled) {
+            this.props.onSort();
+        }
+    }
+
     render() {
-        var sortEnabled = this.props.sortState != SortState.Disabled;
         var width = { width: this.props.width + 'px' };
-        var maxWidth = { maxWidth: this.props.width - 10 - (sortEnabled ? 17 : 0) + 'px' };
+        var maxWidth = { maxWidth: this.props.width - 10 - (this.sortEnabled ? 17 : 0) + 'px' };
         var sortable;
         switch (this.props.sortState) {
             case SortState.Ascending:
@@ -86,9 +95,9 @@ export class HeaderCell extends React.Component<IHeaderCellProps, any> {
                 sortable = <span className="icon-sort"></span>
                 break;
         }
-        var sortableClass = (sortEnabled ? "moravia-grid-header-cell sortable" : "moravia-grid-header-cell");
+        var sortableClass = (this.sortEnabled ? "moravia-grid-header-cell sortable" : "moravia-grid-header-cell");
         return (
-            <div style={width} className={sortableClass} onClick={ () => this.props.onSort() }>
+            <div style={width} className={sortableClass} onClick={ () => this.handleSort() }>
                 <span style={maxWidth} className="title" title={this.props.title}>{this.props.title}</span>
                 {sortable}
             </div>
