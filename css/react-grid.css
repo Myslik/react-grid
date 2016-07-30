@@ -62,7 +62,6 @@
 .moravia-grid .moravia-grid-row {
   background-color: #fff;
   border-bottom: 1px solid #ddd;
-  cursor: pointer;
 }
 .moravia-grid .moravia-grid-row:last-child {
   border-bottom: none;
@@ -86,6 +85,7 @@
   -o-text-overflow: ellipsis;
   text-overflow: ellipsis;
   padding: 5px;
+  cursor: default;
 }
 .moravia-grid .moravia-grid-header-cell:last-child {
   border-right: none;
