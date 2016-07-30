@@ -23,7 +23,9 @@ export class Row extends React.Component<IRowProps, any> {
                             <Cell
                                 key={column.key}
                                 value={value}
-                                width={column.width} />
+                                width={column.width}
+                                textAlign={column.textAlign}
+                                render={column.render} />
                         );
                     })
                 }

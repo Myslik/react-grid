@@ -47,9 +47,9 @@
 	"use strict";
 	var React = __webpack_require__(1);
 	var ReactDOM = __webpack_require__(2);
-	var demo_1 = __webpack_require__(3);
-	var grid_1 = __webpack_require__(6);
-	var adapter = new demo_1.DemoAdapter();
+	var odata_1 = __webpack_require__(3);
+	var grid_1 = __webpack_require__(5);
+	var adapter = new odata_1.ODataAdapter();
 	ReactDOM.render(React.createElement(grid_1.Grid, {adapter: adapter}), document.getElementById("example"));
 
 
@@ -75,58 +75,60 @@
 	    function __() { this.constructor = d; }
 	    d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
 	};
-	var chance_1 = __webpack_require__(4);
-	var adapter_1 = __webpack_require__(5);
-	var DemoAdapter = (function (_super) {
-	    __extends(DemoAdapter, _super);
-	    function DemoAdapter() {
+	var adapter_1 = __webpack_require__(4);
+	var ODataAdapter = (function (_super) {
+	    __extends(ODataAdapter, _super);
+	    function ODataAdapter() {
 	        _super.apply(this, arguments);
 	    }
-	    Object.defineProperty(DemoAdapter.prototype, "columns", {
-	        get: function () {
-	            return DemoAdapter.COLUMNS;
-	        },
-	        enumerable: true,
-	        configurable: true
-	    });
-	    DemoAdapter.prototype.find = function (query) {
-	        query = this.defaultQuery(query);
+	    ODataAdapter.prototype.getColumns = function () {
 	        return new Promise(function (resolve, reject) {
-	            var chance = new chance_1.Chance(DemoAdapter.CHANCE_SEED);
-	            var rows = [];
-	            for (var i = 1; i <= query.top; i++) {
-	                rows.push({
-	                    id: i,
-	                    firstName: chance.first(),
-	                    lastName: chance.last(),
-	                    age: chance.age(),
-	                    address: chance.address()
-	                });
-	            }
-	            resolve(rows);
+	            resolve(ODataAdapter.COLUMNS);
 	        });
 	    };
-	    DemoAdapter.CHANCE_SEED = 1337;
-	    DemoAdapter.COLUMNS = [
-	        { key: "id", width: 70 },
-	        { key: "firstName", width: 120, sortable: true },
-	        { key: "lastName", width: 120, sortable: true },
-	        { key: "age", width: 70 },
-	        { key: "address", width: 200 }
+	    ODataAdapter.prototype.handleResponse = function (response) {
+	        return response.value.map(function (i) {
+	            i["id"] = i[ODataAdapter.IDENTIFIER];
+	            return i;
+	        });
+	    };
+	    ODataAdapter.prototype.find = function (query) {
+	        var _this = this;
+	        query = this.defaultQuery(query);
+	        return new Promise(function (resolve, reject) {
+	            var request = new XMLHttpRequest();
+	            request.open("GET", ODataAdapter.URI, true);
+	            request.onload = function () {
+	                if (request.status >= 200 && request.status < 400) {
+	                    var response = JSON.parse(request.responseText);
+	                    var entities = _this.handleResponse(response);
+	                    resolve(entities);
+	                }
+	                else {
+	                    reject();
+	                }
+	            };
+	            request.onerror = function () {
+	                reject();
+	            };
+	            request.send();
+	        });
+	    };
+	    ODataAdapter.URI = "http://services.odata.org/V4/OData/OData.svc/Products";
+	    ODataAdapter.IDENTIFIER = "ID";
+	    ODataAdapter.COLUMNS = [
+	        { key: "ID", width: 70 },
+	        { key: "Name", width: 140, sortable: true },
+	        { key: "Description", width: 250, sortable: true },
+	        { key: "Rating", width: 70 }
 	    ];
-	    return DemoAdapter;
+	    return ODataAdapter;
 	}(adapter_1.Adapter));
-	exports.DemoAdapter = DemoAdapter;
+	exports.ODataAdapter = ODataAdapter;
 
 
 /***/ },
 /* 4 */
-/***/ function(module, exports) {
-
-	module.exports = Chance;
-
-/***/ },
-/* 5 */
 /***/ function(module, exports) {
 
 	"use strict";
@@ -154,7 +156,7 @@
 
 
 /***/ },
-/* 6 */
+/* 5 */
 /***/ function(module, exports, __webpack_require__) {
 
 	"use strict";
@@ -164,28 +166,39 @@
 	    d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
 	};
 	var React = __webpack_require__(1);
-	var header_1 = __webpack_require__(7);
-	var body_1 = __webpack_require__(9);
+	var header_1 = __webpack_require__(6);
+	var body_1 = __webpack_require__(8);
 	var Grid = (function (_super) {
 	    __extends(Grid, _super);
 	    function Grid(props) {
 	        _super.call(this, props);
 	        this.state = {
 	            entities: [],
-	            selection: []
+	            selection: [],
+	            columns: []
 	        };
+	        this.loadColumns();
 	    }
-	    Grid.prototype.componentDidMount = function () {
-	        this.load();
-	    };
-	    Grid.prototype.load = function () {
-	        var _this = this;
-	        var query = {
+	    Grid.prototype.buildQuery = function () {
+	        return {
 	            skip: this.state.entities.length,
 	            sorting: this.state.sorting,
 	            filter: this.state.filter,
 	            select: this.state.select
 	        };
+	    };
+	    Grid.prototype.loadColumns = function () {
+	        var _this = this;
+	        this.props.adapter.getColumns().then(function (columns) {
+	            _this.setState(function (prevState, props) {
+	                prevState.columns = columns;
+	                return prevState;
+	            }, function () { _this.load(); });
+	        });
+	    };
+	    Grid.prototype.load = function () {
+	        var _this = this;
+	        var query = this.buildQuery();
 	        this.props.adapter.find(query).then(function (entities) {
 	            _this.setState(function (prevState, props) {
 	                prevState.entities = entities;
@@ -264,7 +277,7 @@
 	    Grid.prototype.render = function () {
 	        var _this = this;
 	        var allSelected = this.state.selection.length > 0;
-	        return (React.createElement("div", {className: "moravia-grid"}, React.createElement("div", {className: "moravia-grid-scrollable", onScroll: function (e) { return _this.handleScroll(e); }}, React.createElement("div", {className: "moravia-grid-inner"}, React.createElement(header_1.Header, {columns: this.props.adapter.columns, selected: allSelected, onSelectAll: function () { return _this.handleSelectAll(); }, sorting: this.state.sorting, onSort: function (key) { return _this.handleSort(key); }}), React.createElement(body_1.Body, {columns: this.props.adapter.columns, entities: this.state.entities, selection: this.state.selection, onSelect: function (index) { return _this.handleSelect(index); }})))));
+	        return (React.createElement("div", {className: "moravia-grid"}, React.createElement("div", {className: "moravia-grid-scrollable", onScroll: function (e) { return _this.handleScroll(e); }}, React.createElement("div", {className: "moravia-grid-inner"}, React.createElement(header_1.Header, {columns: this.state.columns, selected: allSelected, onSelectAll: function () { return _this.handleSelectAll(); }, sorting: this.state.sorting, onSort: function (key) { return _this.handleSort(key); }}), React.createElement(body_1.Body, {columns: this.state.columns, entities: this.state.entities, selection: this.state.selection, onSelect: function (index) { return _this.handleSelect(index); }})))));
 	    };
 	    return Grid;
 	}(React.Component));
@@ -272,7 +285,7 @@
 
 
 /***/ },
-/* 7 */
+/* 6 */
 /***/ function(module, exports, __webpack_require__) {
 
 	"use strict";
@@ -282,7 +295,7 @@
 	    d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
 	};
 	var React = __webpack_require__(1);
-	var cell_1 = __webpack_require__(8);
+	var cell_1 = __webpack_require__(7);
 	var Header = (function (_super) {
 	    __extends(Header, _super);
 	    function Header() {
@@ -317,7 +330,7 @@
 
 
 /***/ },
-/* 8 */
+/* 7 */
 /***/ function(module, exports, __webpack_require__) {
 
 	"use strict";
@@ -422,7 +435,7 @@
 
 
 /***/ },
-/* 9 */
+/* 8 */
 /***/ function(module, exports, __webpack_require__) {
 
 	"use strict";
@@ -432,7 +445,7 @@
 	    d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
 	};
 	var React = __webpack_require__(1);
-	var row_1 = __webpack_require__(10);
+	var row_1 = __webpack_require__(9);
 	var Body = (function (_super) {
 	    __extends(Body, _super);
 	    function Body() {
@@ -451,7 +464,7 @@
 
 
 /***/ },
-/* 10 */
+/* 9 */
 /***/ function(module, exports, __webpack_require__) {
 
 	"use strict";
@@ -461,7 +474,7 @@
 	    d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
 	};
 	var React = __webpack_require__(1);
-	var cell_1 = __webpack_require__(8);
+	var cell_1 = __webpack_require__(7);
 	var Row = (function (_super) {
 	    __extends(Row, _super);
 	    function Row() {

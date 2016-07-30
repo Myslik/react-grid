@@ -1,5 +1,6 @@
 {
     "compilerOptions": {
+        "outDir": "./dist/",
         "target": "es5",
         "module": "commonjs",
         "jsx": "react",
@@ -11,6 +12,7 @@
     "files": [
         "./typings/index.d.ts",
         "./src/adapter.ts",
+        "./src/render.tsx",
         "./src/cell.tsx",
         "./src/row.tsx",
         "./src/header.tsx",

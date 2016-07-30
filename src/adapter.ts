@@ -5,11 +5,17 @@ export interface IEntity {
     id: string;
 }
 
+export interface IRender {
+    (value: any): any;
+}
+
 export interface IColumn {
     key: string;
     title?: string;
     width?: number;
+    textAlign?: any;
     sortable?: boolean;
+    render?: IRender;
 }
 
 export interface ISorting {
