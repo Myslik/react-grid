@@ -17,6 +17,7 @@
         "./src/row.tsx",
         "./src/header.tsx",
         "./src/body.tsx",
+        "./src/settings.tsx",
         "./src/grid.tsx",
         "./src/odata.ts",
         "./src/demo.ts",

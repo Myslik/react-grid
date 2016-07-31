@@ -34,7 +34,7 @@ export class Cell extends React.Component<ICellProps, any> {
     render() {
         var value = this.props.value;
         return (
-            <div style={ this.style() } className="moravia-grid-row-cell">
+            <div style={ this.style() } className="react-grid-row-cell">
                 { this.value() }
             </div>
         );
@@ -64,7 +64,7 @@ export class CheckboxCell extends React.Component<ICheckboxCellProps, void> {
 
     render() {
         return (
-            <div onClick={this.props.onCheck} style={ this.style() } className = "moravia-grid-row-cell">
+            <div onClick={this.props.onCheck} style={ this.style() } className = "react-grid-row-cell">
                 <input type="checkbox" checked={this.props.checked} readOnly />
             </div>
         );

@@ -37,7 +37,7 @@ export class ODataAdapter extends Adapter {
                 buffer.push("$orderby=" + query.sorting.key + (query.sorting.asc === false ? " desc" : " asc"));
             }
             if (!!query.select) {
-                buffer.push("$select=" + query.select.join(", "));
+                buffer.push("$select=" + query.select.join(","));
             }
             if (!!query.top) {
                 buffer.push("$top=" + query.top);

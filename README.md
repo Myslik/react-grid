@@ -14,8 +14,8 @@
 - [x] Sorting
 - [x] Cell renderers
 - [x] OData adapter
+- [x] Column visibility
 - [ ] Filtering
 - [ ] Infinite scrolling
 - [ ] Column ordering
-- [ ] Column visibility
 - [ ] Store Grid state in localStorage

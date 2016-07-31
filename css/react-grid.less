@@ -33,19 +33,19 @@
 	vertical-align: top;
 }
 
-.row-cell {
+.row-cell() {
 	.cell();
 	.ellipsis();
 	padding: @grid-cell-padding;
 	z-index: 1;
 }
 
-.header-cell {
+.header-cell() {
 	.cell();
 	border-right: 1px solid @grid-border-color;
 }
 
-.moravia-grid {
+.react-grid {
     background-color: @grid-bg;
 	border: 1px solid @grid-border-color;
     font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
@@ -53,27 +53,27 @@
     position: relative;
 	height: 100%;
 
-	.moravia-grid-scrollable {
+	.react-grid-scrollable {
 		overflow: auto;
 		position: relative;
 		height: 100%;
 	}
 
-	.moravia-grid-inner {
+	.react-grid-inner {
 		background-color: transparent;
 		display: table;
 		width: 100%;
 	}
 	
-	.moravia-grid-header,
-    .moravia-grid-row,
-    .moravia-grid-body {
+	.react-grid-header,
+    .react-grid-row,
+    .react-grid-body {
         white-space: nowrap;
         display: block;
 		position: relative;
     }
 	
-	.moravia-grid-header {
+	.react-grid-header {
 		background-color: @grid-header-bg;
         border-bottom: 1px solid @grid-border-color;
 		color: @grid-header-color;
@@ -81,7 +81,7 @@
         z-index: 2;
     }
 
-    .moravia-grid-row {
+    .react-grid-row {
 		background-color: @grid-bg;
         border-bottom: 1px solid @grid-border-color;
 
@@ -94,7 +94,7 @@
 		}
 	}
 	
-	.moravia-grid-header-cell {
+	.react-grid-header-cell {
         .header-cell();
 		.ellipsis();
 		padding: @grid-cell-padding;
@@ -129,7 +129,7 @@
 		}
 	}
 	
-	.moravia-grid-row-cell {
+	.react-grid-row-cell {
         .row-cell();
 
         &:last-child {
@@ -137,7 +137,7 @@
         }
 	}
 	
-	.moravia-grid-overlay {
+	.react-grid-settings {
 		position: absolute;
 		top: 0;
 		left: 0;
@@ -145,10 +145,5 @@
 		height: 100%;
 		z-index: 10;
 		background-color: white;
-		
-		.message {
-			.row-cell();
-			width: 100%;
-		}
 	}
 }

@@ -4,6 +4,7 @@ import * as React from "react";
 import { IEntity, IColumn, IQuery, IFilter, ISorting, IAdapter } from "./adapter";
 import { Header } from "./header";
 import { Body } from "./body";
+import { Settings } from "./settings";
 
 export interface IGridProps {
     adapter: IAdapter;
@@ -16,6 +17,7 @@ export interface IGridState {
     sorting?: ISorting;
     filter?: IFilter[];
     select?: string[];
+    inSettings?: boolean;
 }
 
 export class Grid extends React.Component<IGridProps, IGridState> {
@@ -24,9 +26,17 @@ export class Grid extends React.Component<IGridProps, IGridState> {
         this.state = {
             entities: [],
             selection: [],
-            columns: []
+            columns: [],
+            select: [],
+            inSettings: false
         };
         this.loadColumns();
+    }
+
+    get columns(): IColumn[] {
+        return this.state.columns.filter((c) => {
+            return this.state.select.indexOf(c.key) != -1;
+        });
     }
 
     buildQuery(): IQuery {
@@ -42,6 +52,7 @@ export class Grid extends React.Component<IGridProps, IGridState> {
         this.props.adapter.getColumns().then(columns => {
             this.setState((prevState, props) => {
                 prevState.columns = columns;
+                prevState.select = columns.map((c) => c.key);
                 return prevState;
             }, () => { this.load(); });
         });
@@ -106,8 +117,8 @@ export class Grid extends React.Component<IGridProps, IGridState> {
         var scrollTop = scrollable.scrollTop;
         var scrollLeft = scrollable.scrollLeft;
 
-        var header = scrollable.getElementsByClassName('moravia-grid-header')[0] as HTMLDivElement;
-        var body = scrollable.getElementsByClassName('moravia-grid-body')[0] as HTMLDivElement;
+        var header = scrollable.getElementsByClassName('react-grid-header')[0] as HTMLDivElement;
+        var body = scrollable.getElementsByClassName('react-grid-body')[0] as HTMLDivElement;
         if (scrollTop != 0 || scrollLeft != 0) {
             body.style.marginTop = header.offsetHeight + "px";
             header.style.position = "absolute";
@@ -123,25 +134,45 @@ export class Grid extends React.Component<IGridProps, IGridState> {
         }
     }
 
+    handleContextMenu(e: React.MouseEvent) {
+        e.preventDefault();
+        this.setState((prevState, props) => {
+            prevState.inSettings = !prevState.inSettings;
+            return prevState;
+        });
+    }
+
+    handleSettings(select: string[]) {
+        this.setState((prevState, props) => {
+            prevState.select = select;
+            return prevState;
+        });
+    }
+
     render() {
         var allSelected = this.state.selection.length > 0;
         return (
-            <div className="moravia-grid">
-                <div className="moravia-grid-scrollable" onScroll={ (e) => this.handleScroll(e) }>
-                    <div className="moravia-grid-inner">
+            <div className="react-grid" onContextMenu={ (e) => this.handleContextMenu(e) }>
+                <div className="react-grid-scrollable" onScroll={ (e) => this.handleScroll(e) }>
+                    <div className="react-grid-inner">
                         <Header
-                            columns={this.state.columns}
+                            columns={this.columns}
                             selected={allSelected}
                             onSelectAll={ () => this.handleSelectAll() }
                             sorting={this.state.sorting}
                             onSort={ (key) => this.handleSort(key) } />
                         <Body
-                            columns={this.state.columns}
+                            columns={this.columns}
                             entities={this.state.entities}
                             selection={this.state.selection}
                             onSelect={ (index) => this.handleSelect(index) } />
                     </div>
                 </div>
+                <Settings
+                    visible={this.state.inSettings}
+                    columns={this.state.columns}
+                    select={this.state.select}
+                    onChange={ (select) => this.handleSettings(select) } />
             </div>
         );
     }
