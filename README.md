@@ -19,3 +19,5 @@
 - [ ] Infinite scrolling
 - [ ] Column ordering
 - [ ] Store Grid state in localStorage
+- [ ] Loading indicator
+- [ ] Animations
