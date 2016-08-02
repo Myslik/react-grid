@@ -41,6 +41,39 @@ export class Cell extends React.Component<ICellProps, any> {
     }
 }
 
+export interface IEditCellProps {
+    value: any;
+    width?: number;
+}
+
+export class EditCell extends React.Component<IEditCellProps, any> {
+    static defaultProps = {
+        width: 100
+    };
+
+    style(): React.CSSProperties {
+        return {
+            width: this.props.width + 'px',
+            padding: 0
+        };
+    }
+
+    render() {
+        var value = this.props.value;
+        var inputStyle = { 
+            width: "100%",
+            padding: 0,
+            lineHeight: "22px",
+            border: "none"
+         }
+        return (
+            <div style={ this.style() } className="react-grid-row-cell">
+                <input type="text" style={inputStyle} value={this.props.value} />
+            </div>
+        );
+    }
+}
+
 export interface ICheckboxCellProps {
     checked: boolean;
     onCheck: () => void;

@@ -54,11 +54,11 @@ export class Grid extends React.Component<IGridProps, IGridState> {
                 prevState.columns = columns;
                 prevState.select = columns.map((c) => c.key);
                 return prevState;
-            }, () => { this.load(); });
+            }, () => { this.loadRows(); });
         });
     }
 
-    load() {
+    loadRows() {
         var query = this.buildQuery();
         this.props.adapter.find(query).then(entities => {
             this.setState((prevState, props) => {
@@ -109,7 +109,7 @@ export class Grid extends React.Component<IGridProps, IGridState> {
             }
             prevState.entities = [];
             return prevState;
-        }, () => { this.load(); });
+        }, () => { this.loadRows(); });
     }
 
     handleScroll(e: React.UIEvent) {

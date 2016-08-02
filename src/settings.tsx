@@ -2,8 +2,8 @@
 
 import * as React from "react";
 import { IColumn } from "./adapter";
-import { CheckboxCell, Cell } from "./cell";
-import { HeaderCell, CheckboxHeaderCell, SortState } from "./header";
+import { Cell, CheckboxCell } from "./cell";
+import { HeaderCell } from "./header";
 
 export interface ISettingsProps {
     visible: boolean;
