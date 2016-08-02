@@ -100,7 +100,7 @@
 	                buffer.push("$orderby=" + query.sorting.key + (query.sorting.asc === false ? " desc" : " asc"));
 	            }
 	            if (!!query.select) {
-	                buffer.push("$select=" + query.select.join(", "));
+	                buffer.push("$select=" + query.select.join(","));
 	            }
 	            if (!!query.top) {
 	                buffer.push("$top=" + query.top);
@@ -189,6 +189,7 @@
 	var React = __webpack_require__(1);
 	var header_1 = __webpack_require__(7);
 	var body_1 = __webpack_require__(8);
+	var settings_1 = __webpack_require__(11);
 	var Grid = (function (_super) {
 	    __extends(Grid, _super);
 	    function Grid(props) {
@@ -196,10 +197,22 @@
 	        this.state = {
 	            entities: [],
 	            selection: [],
-	            columns: []
+	            columns: [],
+	            select: [],
+	            inSettings: false
 	        };
 	        this.loadColumns();
 	    }
+	    Object.defineProperty(Grid.prototype, "columns", {
+	        get: function () {
+	            var _this = this;
+	            return this.state.columns.filter(function (c) {
+	                return _this.state.select.indexOf(c.key) != -1;
+	            });
+	        },
+	        enumerable: true,
+	        configurable: true
+	    });
 	    Grid.prototype.buildQuery = function () {
 	        return {
 	            skip: this.state.entities.length,
@@ -213,6 +226,7 @@
 	        this.props.adapter.getColumns().then(function (columns) {
 	            _this.setState(function (prevState, props) {
 	                prevState.columns = columns;
+	                prevState.select = columns.map(function (c) { return c.key; });
 	                return prevState;
 	            }, function () { _this.load(); });
 	        });
@@ -295,10 +309,23 @@
 	            header.style.width = "auto";
 	        }
 	    };
+	    Grid.prototype.handleContextMenu = function (e) {
+	        e.preventDefault();
+	        this.setState(function (prevState, props) {
+	            prevState.inSettings = !prevState.inSettings;
+	            return prevState;
+	        });
+	    };
+	    Grid.prototype.handleSettings = function (select) {
+	        this.setState(function (prevState, props) {
+	            prevState.select = select;
+	            return prevState;
+	        });
+	    };
 	    Grid.prototype.render = function () {
 	        var _this = this;
 	        var allSelected = this.state.selection.length > 0;
-	        return (React.createElement("div", {className: "react-grid"}, React.createElement("div", {className: "react-grid-scrollable", onScroll: function (e) { return _this.handleScroll(e); }}, React.createElement("div", {className: "react-grid-inner"}, React.createElement(header_1.Header, {columns: this.state.columns, selected: allSelected, onSelectAll: function () { return _this.handleSelectAll(); }, sorting: this.state.sorting, onSort: function (key) { return _this.handleSort(key); }}), React.createElement(body_1.Body, {columns: this.state.columns, entities: this.state.entities, selection: this.state.selection, onSelect: function (index) { return _this.handleSelect(index); }})))));
+	        return (React.createElement("div", {className: "react-grid", onContextMenu: function (e) { return _this.handleContextMenu(e); }}, React.createElement("div", {className: "react-grid-scrollable", onScroll: function (e) { return _this.handleScroll(e); }}, React.createElement("div", {className: "react-grid-inner"}, React.createElement(header_1.Header, {columns: this.columns, selected: allSelected, onSelectAll: function () { return _this.handleSelectAll(); }, sorting: this.state.sorting, onSort: function (key) { return _this.handleSort(key); }}), React.createElement(body_1.Body, {columns: this.columns, entities: this.state.entities, selection: this.state.selection, onSelect: function (index) { return _this.handleSelect(index); }}))), React.createElement(settings_1.Settings, {visible: this.state.inSettings, columns: this.state.columns, select: this.state.select, onChange: function (select) { return _this.handleSettings(select); }})));
 	    };
 	    return Grid;
 	}(React.Component));
@@ -538,6 +565,54 @@
 	    return CheckboxCell;
 	}(React.Component));
 	exports.CheckboxCell = CheckboxCell;
+
+
+/***/ },
+/* 11 */
+/***/ function(module, exports, __webpack_require__) {
+
+	"use strict";
+	var __extends = (this && this.__extends) || function (d, b) {
+	    for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p];
+	    function __() { this.constructor = d; }
+	    d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
+	};
+	var React = __webpack_require__(1);
+	var cell_1 = __webpack_require__(10);
+	var header_1 = __webpack_require__(7);
+	var Settings = (function (_super) {
+	    __extends(Settings, _super);
+	    function Settings(props) {
+	        _super.call(this, props);
+	    }
+	    Settings.prototype.handleSelect = function (key) {
+	        var select = this.props.select;
+	        var index = select.indexOf(key);
+	        if (index === -1) {
+	            select.push(key);
+	        }
+	        else {
+	            select.splice(index, 1);
+	        }
+	        this.props.onChange(select);
+	    };
+	    Settings.prototype.render = function () {
+	        var _this = this;
+	        var style = {
+	            display: this.props.visible ? "block" : "none"
+	        };
+	        return (React.createElement("div", {className: "react-grid-settings", style: style}, React.createElement("div", {className: "react-grid-header"}, React.createElement("div", {className: "react-grid-header-cell"}, "Grid Settings")), React.createElement("div", {className: "react-grid-header"}, React.createElement(header_1.HeaderCell, {title: "Column name", width: 164})), React.createElement("div", {className: "react-grid-body"}, this.props.columns.map(function (column) {
+	            var title = column.title || column.key;
+	            var visible = _this.props.select.indexOf(column.key) != -1;
+	            return (React.createElement("div", {key: column.key, className: "react-grid-row"}, React.createElement(cell_1.CheckboxCell, {checked: visible, onCheck: function () { return _this.handleSelect(column.key); }}), React.createElement(cell_1.Cell, {value: title, width: 140})));
+	        }))));
+	    };
+	    Settings.defaultProps = {
+	        visible: false
+	    };
+	    return Settings;
+	}(React.Component));
+	exports.Settings = Settings;
 
 
 /***/ }
