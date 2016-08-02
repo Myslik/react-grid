@@ -34,7 +34,7 @@ export class Cell extends React.Component<ICellProps, any> {
     render() {
         var value = this.props.value;
         return (
-            <div style={ this.style() } className="react-grid-row-cell">
+            <div style={ this.style() } className="cell">
                 { this.value() }
             </div>
         );
@@ -53,22 +53,15 @@ export class EditCell extends React.Component<IEditCellProps, any> {
 
     style(): React.CSSProperties {
         return {
-            width: this.props.width + 'px',
-            padding: 0
+            width: this.props.width + 'px'
         };
     }
 
     render() {
         var value = this.props.value;
-        var inputStyle = { 
-            width: "100%",
-            padding: 0,
-            lineHeight: "22px",
-            border: "none"
-         }
         return (
-            <div style={ this.style() } className="react-grid-row-cell">
-                <input type="text" style={inputStyle} value={this.props.value} />
+            <div style={ this.style() } className="edit-cell">
+                <input type="text" value={this.props.value} readOnly />
             </div>
         );
     }
@@ -97,7 +90,7 @@ export class CheckboxCell extends React.Component<ICheckboxCellProps, void> {
 
     render() {
         return (
-            <div onClick={this.props.onCheck} style={ this.style() } className = "react-grid-row-cell">
+            <div onClick={this.props.onCheck} style={ this.style() } className = "cell">
                 <input type="checkbox" checked={this.props.checked} readOnly />
             </div>
         );

@@ -7,41 +7,41 @@
   position: relative;
   height: 100%;
 }
-.react-grid .react-grid-scrollable {
+.react-grid .scrollable {
   overflow: auto;
   position: relative;
   height: 100%;
 }
-.react-grid .react-grid-inner {
+.react-grid .inner {
   background-color: transparent;
   display: table;
   width: 100%;
 }
-.react-grid .react-grid-header,
-.react-grid .react-grid-row,
-.react-grid .react-grid-body {
+.react-grid .header,
+.react-grid .row,
+.react-grid .body {
   white-space: nowrap;
   display: block;
   position: relative;
 }
-.react-grid .react-grid-header {
+.react-grid .header {
   background-color: #fafafa;
   border-bottom: 1px solid #ddd;
   color: #666;
   text-transform: uppercase;
   z-index: 2;
 }
-.react-grid .react-grid-row {
+.react-grid .row {
   background-color: #fff;
   border-bottom: 1px solid #ddd;
 }
-.react-grid .react-grid-row:last-child {
+.react-grid .row:last-child {
   border-bottom: none;
 }
-.react-grid .react-grid-row.active {
+.react-grid .row.active {
   background-color: #d9edf7;
 }
-.react-grid .react-grid-header-cell {
+.react-grid .header-cell {
   -moz-box-sizing: border-box;
   -webkit-box-sizing: border-box;
   box-sizing: border-box;
@@ -59,30 +59,30 @@
   padding: 5px;
   cursor: default;
 }
-.react-grid .react-grid-header-cell:last-child {
+.react-grid .header-cell:last-child {
   border-right: none;
 }
-.react-grid .react-grid-header-cell.sortable {
+.react-grid .header-cell.sortable {
   cursor: pointer;
 }
-.react-grid .react-grid-header-cell .title {
+.react-grid .header-cell .title {
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
   float: left;
 }
-.react-grid .react-grid-header-cell .icon-sort {
+.react-grid .header-cell .icon-sort {
   float: left;
   text-align: center;
   color: #ccc;
 }
-.react-grid .react-grid-header-cell .icon-sort-down,
-.react-grid .react-grid-header-cell .icon-sort-up {
+.react-grid .header-cell .icon-sort-down,
+.react-grid .header-cell .icon-sort-up {
   float: left;
   text-align: center;
   color: #009ee1;
 }
-.react-grid .react-grid-row-cell {
+.react-grid .cell {
   -moz-box-sizing: border-box;
   -webkit-box-sizing: border-box;
   box-sizing: border-box;
@@ -99,10 +99,37 @@
   padding: 5px;
   z-index: 1;
 }
-.react-grid .react-grid-row-cell:last-child {
+.react-grid .cell:last-child {
   border-right: none;
 }
-.react-grid .react-grid-settings {
+.react-grid .edit-cell {
+  -moz-box-sizing: border-box;
+  -webkit-box-sizing: border-box;
+  box-sizing: border-box;
+  background-color: transparent;
+  display: inline-block;
+  height: 100%;
+  position: relative;
+  vertical-align: top;
+  white-space: nowrap;
+  overflow: hidden;
+  -ms-text-overflow: ellipsis;
+  -o-text-overflow: ellipsis;
+  text-overflow: ellipsis;
+  padding: 5px;
+  z-index: 1;
+  padding: 0;
+}
+.react-grid .edit-cell:last-child {
+  border-right: none;
+}
+.react-grid .edit-cell input[type="text"] {
+  border: 0;
+  line-height: 22px;
+  width: 100%;
+  padding: 0;
+}
+.react-grid .settings {
   position: absolute;
   top: 0;
   left: 0;

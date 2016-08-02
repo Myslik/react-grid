@@ -152,15 +152,16 @@ export class Grid extends React.Component<IGridProps, IGridState> {
     render() {
         var allSelected = this.state.selection.length > 0;
         return (
-            <div className="react-grid" onContextMenu={ (e) => this.handleContextMenu(e) }>
-                <div className="react-grid-scrollable" onScroll={ (e) => this.handleScroll(e) }>
-                    <div className="react-grid-inner">
+            <div className="react-grid">
+                <div className="scrollable" onScroll={ (e) => this.handleScroll(e) }>
+                    <div className="inner">
                         <Header
                             columns={this.columns}
                             selected={allSelected}
                             onSelectAll={ () => this.handleSelectAll() }
                             sorting={this.state.sorting}
-                            onSort={ (key) => this.handleSort(key) } />
+                            onSort={ (key) => this.handleSort(key) }
+                            onContextMenu={ (e) => this.handleContextMenu(e) } />
                         <Body
                             columns={this.columns}
                             entities={this.state.entities}

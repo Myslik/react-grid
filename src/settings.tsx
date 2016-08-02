@@ -1,7 +1,7 @@
 /// <reference path="../typings/index.d.ts" />
 
 import * as React from "react";
-import { IColumn } from "./adapter";
+import { IColumn, IRender } from "./adapter";
 import { Cell, CheckboxCell } from "./cell";
 import { HeaderCell } from "./header";
 
@@ -14,6 +14,21 @@ export interface ISettingsProps {
 
 export interface ISettingsState {
     
+}
+
+export var OperatorSelect: IRender = (value: any) => {
+    return (
+        <select defaultValue={value}>
+            <option value="eq">equals</option>
+            <option value="ne">not equals</option>
+        </select>
+    );
+}
+
+export var ValueField: IRender = (value: any) => {
+    return (
+        <input type="text" defaultValue={value} />
+    );
 }
 
 export class Settings extends React.Component<ISettingsProps, ISettingsState> {
@@ -42,22 +57,24 @@ export class Settings extends React.Component<ISettingsProps, ISettingsState> {
             display: this.props.visible ? "block" : "none"
         };
         return (
-            <div className="react-grid-settings" style={style}>
-                <div className="react-grid-header">
-                    <div className="react-grid-header-cell">Grid Settings</div>
+            <div className="settings" style={style}>
+                <div className="header">
+                    <div className="header-cell">Grid Settings</div>
                 </div>
-                <div className="react-grid-header">
+                <div className="header">
                     <HeaderCell title="Column name" width={164} />
                 </div>
-                <div className="react-grid-body">
+                <div className="body">
                     {
                         this.props.columns.map((column) => {
                             var title = column.title || column.key;
                             var visible = this.props.select.indexOf(column.key) != -1;
                             return (
-                                <div key={column.key} className="react-grid-row">
+                                <div key={column.key} className="row">
                                     <CheckboxCell checked={visible} onCheck={ () => this.handleSelect(column.key) } />
                                     <Cell value={title} width={140} />
+                                    <Cell value={"eq"} width={100} render={OperatorSelect} />
+                                    <Cell value={"value"} width={180} render={ValueField} />
                                 </div>
                             );
                         })

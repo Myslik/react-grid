@@ -53,27 +53,27 @@
     position: relative;
 	height: 100%;
 
-	.react-grid-scrollable {
+	.scrollable {
 		overflow: auto;
 		position: relative;
 		height: 100%;
 	}
 
-	.react-grid-inner {
+	.inner {
 		background-color: transparent;
 		display: table;
 		width: 100%;
 	}
 	
-	.react-grid-header,
-    .react-grid-row,
-    .react-grid-body {
+	.header,
+    .row,
+    .body {
         white-space: nowrap;
         display: block;
 		position: relative;
     }
 	
-	.react-grid-header {
+	.header {
 		background-color: @grid-header-bg;
         border-bottom: 1px solid @grid-border-color;
 		color: @grid-header-color;
@@ -81,7 +81,7 @@
         z-index: 2;
     }
 
-    .react-grid-row {
+    .row {
 		background-color: @grid-bg;
         border-bottom: 1px solid @grid-border-color;
 
@@ -94,7 +94,7 @@
 		}
 	}
 	
-	.react-grid-header-cell {
+	.header-cell {
         .header-cell();
 		.ellipsis();
 		padding: @grid-cell-padding;
@@ -129,15 +129,31 @@
 		}
 	}
 	
-	.react-grid-row-cell {
+	.cell {
         .row-cell();
 
         &:last-child {
             border-right: none;
         }
 	}
+
+	.edit-cell {
+		.row-cell();
+		padding: 0;
+
+		&:last-child {
+            border-right: none;
+        }
+
+		input[type="text"] {
+			border: 0;
+			line-height: 22px;
+			width: 100%;
+			padding: 0;
+		}
+	}
 	
-	.react-grid-settings {
+	.settings {
 		position: absolute;
 		top: 0;
 		left: 0;

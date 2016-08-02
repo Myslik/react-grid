@@ -16,6 +16,7 @@ export interface IHeaderProps {
     onSelectAll: () => void;
     onSort: (key: string) => void;
     sorting: ISorting;
+    onContextMenu?: (e: React.MouseEvent) => void;
 }
 
 export class Header extends React.Component<IHeaderProps, void> {
@@ -37,7 +38,7 @@ export class Header extends React.Component<IHeaderProps, void> {
 
     render() {
         return (
-            <div className="react-grid-header">
+            <div className="header" onContextMenu={this.props.onContextMenu}>
                 <CheckboxHeaderCell checked={this.props.selected} onCheck={this.props.onSelectAll} />
                 {
                     this.props.columns.map((column) => {
@@ -95,7 +96,7 @@ export class HeaderCell extends React.Component<IHeaderCellProps, any> {
                 sortable = <span className="icon-sort"></span>
                 break;
         }
-        var sortableClass = (this.sortEnabled ? "react-grid-header-cell sortable" : "react-grid-header-cell");
+        var sortableClass = (this.sortEnabled ? "header-cell sortable" : "header-cell");
         return (
             <div style={width} className={sortableClass} onClick={ () => this.handleSort() }>
                 <span style={maxWidth} className="title" title={this.props.title}>{this.props.title}</span>
@@ -128,7 +129,7 @@ export class CheckboxHeaderCell extends React.Component<ICheckboxHeaderCellProps
 
     render() {
         return (
-            <div onClick={this.props.onCheck} style={ this.style() } className = "react-grid-header-cell">
+            <div onClick={this.props.onCheck} style={ this.style() } className = "header-cell">
                 <input type="checkbox" checked={this.props.checked} readOnly />
             </div>
         );

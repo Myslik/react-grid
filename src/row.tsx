@@ -14,7 +14,7 @@ export interface IRowProps {
 export class Row extends React.Component<IRowProps, any> {
     render() {
         return (
-            <div className="react-grid-row">
+            <div className="row">
                 <CheckboxCell checked={this.props.selected} onCheck={this.props.onSelect} />
                 {
                     this.props.columns.map((column) => {

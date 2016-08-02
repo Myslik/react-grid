@@ -14,7 +14,7 @@ export interface IBodyProps {
 export class Body extends React.Component<IBodyProps, void> {
     render() {
         return (
-            <div className="react-grid-body">
+            <div className="body">
                 {
                     this.props.entities.map((entity, index) => {
                         var selected = this.props.selection.indexOf(entity.id) != -1;
