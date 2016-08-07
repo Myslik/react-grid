@@ -137,13 +137,14 @@ export class Grid extends React.Component<IGridProps, IGridState> {
     handleContextMenu(e: React.MouseEvent) {
         e.preventDefault();
         this.setState((prevState, props) => {
-            prevState.inSettings = !prevState.inSettings;
+            prevState.inSettings = true;
             return prevState;
         });
     }
 
     handleSettings(select: string[]) {
         this.setState((prevState, props) => {
+            prevState.inSettings = false;
             prevState.select = select;
             return prevState;
         });

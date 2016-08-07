@@ -13,7 +13,7 @@ export interface ISettingsProps {
 }
 
 export interface ISettingsState {
-    
+
 }
 
 export var OperatorSelect: IRender = (value: any) => {
@@ -58,27 +58,22 @@ export class Settings extends React.Component<ISettingsProps, ISettingsState> {
         };
         return (
             <div className="settings" style={style}>
-                <div className="header">
-                    <div className="header-cell">Grid Settings</div>
-                </div>
-                <div className="header">
-                    <HeaderCell title="Column name" width={164} />
-                </div>
-                <div className="body">
-                    {
-                        this.props.columns.map((column) => {
-                            var title = column.title || column.key;
-                            var visible = this.props.select.indexOf(column.key) != -1;
-                            return (
-                                <div key={column.key} className="row">
-                                    <CheckboxCell checked={visible} onCheck={ () => this.handleSelect(column.key) } />
-                                    <Cell value={title} width={140} />
-                                    <Cell value={"eq"} width={100} render={OperatorSelect} />
-                                    <Cell value={"value"} width={180} render={ValueField} />
-                                </div>
-                            );
-                        })
-                    }
+                <div className="title">Grid Settings</div>
+                {
+                    this.props.columns.map((column) => {
+                        var title = column.title || column.key;
+                        var visible = this.props.select.indexOf(column.key) != -1;
+                        return (
+                            <div className="row">
+                                <input type="checkbox" name={column.key} id={column.key} checked={visible} onClick={ () => this.handleSelect(column.key) } />
+                                <label for={column.key}>{title}</label>
+                            </div>
+                        );
+                    })
+                }
+                <div className="actions">
+                    <button>Close</button>
+                    <button>Save</button>
                 </div>
             </div>
         );

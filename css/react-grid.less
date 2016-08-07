@@ -161,5 +161,24 @@
 		height: 100%;
 		z-index: 10;
 		background-color: white;
+		font-size: 14px;
+
+		.title {
+			background-color: @grid-header-bg;
+        	border-bottom: 1px solid @grid-border-color;
+			padding: @grid-cell-padding;
+			color: @grid-header-color;
+        	text-transform: uppercase;
+        	z-index: 2;
+		}
+
+		.row {
+			border-bottom: 1px solid @grid-border-color;
+			padding: @grid-cell-padding;
+		}
+
+		.actions {
+			padding: @grid-cell-padding;
+		}
 	}
 }

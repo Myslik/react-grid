@@ -137,4 +137,20 @@
   height: 100%;
   z-index: 10;
   background-color: white;
+  font-size: 14px;
+}
+.react-grid .settings .title {
+  background-color: #fafafa;
+  border-bottom: 1px solid #ddd;
+  padding: 5px;
+  color: #666;
+  text-transform: uppercase;
+  z-index: 2;
+}
+.react-grid .settings .row {
+  border-bottom: 1px solid #ddd;
+  padding: 5px;
+}
+.react-grid .settings .actions {
+  padding: 5px;
 }
