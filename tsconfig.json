@@ -7,20 +7,14 @@
         "removeComments": true,
         "noLib": false,
         "preserveConstEnums": true,
-        "suppressImplicitAnyIndexErrors": true
+        "strictNullChecks": true,
+        "types": ["es6-promise", "react", "react-dom"]
     },
-    "files": [
-        "./typings/index.d.ts",
-        "./src/adapter.ts",
-        "./src/render.tsx",
-        "./src/cell.tsx",
-        "./src/row.tsx",
-        "./src/header.tsx",
-        "./src/body.tsx",
-        "./src/settings.tsx",
-        "./src/grid.tsx",
-        "./src/odata.ts",
-        "./src/demo.ts",
-        "./src/index.tsx"
+    "include": [
+        "src/**/*"
+    ],
+    "exclude": [
+        "node_modules",
+        "**/*.spec.ts"
     ]
 }

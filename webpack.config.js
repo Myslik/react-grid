@@ -32,6 +32,5 @@ module.exports = {
         "react": "React",
         "react-dom": "ReactDOM",
         "es6-promise": "Promise",
-        "chance": "Chance"
     },
 };

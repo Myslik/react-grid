@@ -1,5 +1,3 @@
-/// <reference path="../typings/index.d.ts" />
-
 import * as React from "react";
 import { ISorting, IColumn } from "./adapter";
 
@@ -15,8 +13,8 @@ export interface IHeaderProps {
     selected: boolean;
     onSelectAll: () => void;
     onSort: (key: string) => void;
-    sorting: ISorting;
-    onContextMenu?: (e: React.MouseEvent) => void;
+    sorting?: ISorting;
+    onContextMenu: () => void;
 }
 
 export class Header extends React.Component<IHeaderProps, void> {
@@ -36,9 +34,14 @@ export class Header extends React.Component<IHeaderProps, void> {
         }
     }
 
+    onContextMenu(e: React.MouseEvent<HTMLDivElement>) {
+        e.preventDefault();
+        this.props.onContextMenu();
+    }
+
     render() {
         return (
-            <div className="header" onContextMenu={this.props.onContextMenu}>
+            <div className="header" onContextMenu={this.onContextMenu.bind(this)}>
                 <CheckboxHeaderCell checked={this.props.selected} onCheck={this.props.onSelectAll} />
                 {
                     this.props.columns.map((column) => {
@@ -76,7 +79,7 @@ export class HeaderCell extends React.Component<IHeaderCellProps, any> {
     }
 
     handleSort() {
-        if (this.sortEnabled) {
+        if (this.sortEnabled && this.props.onSort != undefined) {
             this.props.onSort();
         }
     }

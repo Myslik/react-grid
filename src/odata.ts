@@ -1,13 +1,11 @@
-/// <reference path="../typings/globals/es6-promise/index.d.ts" />
-
-import { IEntity, IColumn, IQuery, Adapter } from "./adapter";
+import { IRow, IColumn, IQuery, IAdapter } from "./adapter";
 import * as Renderers from "./render";
 
 interface ODataResponse {
     value: any[];
 }
 
-export class ODataAdapter extends Adapter {
+export class ODataAdapter implements IAdapter {
     public static URI: string = "http://services.odata.org/V4/OData/OData.svc/Products";
     public static IDENTIFIER: string = "ID";
     public static COLUMNS: IColumn[] = [
@@ -23,14 +21,14 @@ export class ODataAdapter extends Adapter {
         });
     }
 
-    protected handleResponse(response: ODataResponse): IEntity[] {
+    protected handleResponse(response: ODataResponse): IRow[] {
         return response.value.map((i) => {
             i["id"] = i[ODataAdapter.IDENTIFIER];
-            return <IEntity>i;
+            return <IRow>i;
         });
     }
 
-    protected buildUri(uri: string, query: IQuery): string {
+    protected buildUri(uri: string, query?: IQuery): string {
         if (!!query) {
             var buffer: string[] = [];
             if (!!query.sorting) {
@@ -52,9 +50,9 @@ export class ODataAdapter extends Adapter {
         return uri;
     }
 
-    public find(query?: IQuery): Promise<IEntity[]> {
+    public getRows(query?: IQuery): Promise<IRow[]> {
         var uri = this.buildUri(ODataAdapter.URI, query);
-        return new Promise<IEntity[]>((resolve, reject) => {
+        return new Promise<IRow[]>((resolve, reject) => {
             var request = new XMLHttpRequest();
             request.open("GET", uri, true);
             request.onload = () => {

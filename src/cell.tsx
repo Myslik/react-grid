@@ -1,5 +1,3 @@
-/// <reference path="../typings/index.d.ts" />
-
 import * as React from "react";
 import { IRender } from "./adapter";
 
@@ -36,32 +34,6 @@ export class Cell extends React.Component<ICellProps, any> {
         return (
             <div style={ this.style() } className="cell">
                 { this.value() }
-            </div>
-        );
-    }
-}
-
-export interface IEditCellProps {
-    value: any;
-    width?: number;
-}
-
-export class EditCell extends React.Component<IEditCellProps, any> {
-    static defaultProps = {
-        width: 100
-    };
-
-    style(): React.CSSProperties {
-        return {
-            width: this.props.width + 'px'
-        };
-    }
-
-    render() {
-        var value = this.props.value;
-        return (
-            <div style={ this.style() } className="edit-cell">
-                <input type="text" value={this.props.value} readOnly />
             </div>
         );
     }

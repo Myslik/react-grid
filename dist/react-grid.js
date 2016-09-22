@@ -48,7 +48,7 @@
 	var React = __webpack_require__(1);
 	var ReactDOM = __webpack_require__(2);
 	var odata_1 = __webpack_require__(3);
-	var grid_1 = __webpack_require__(6);
+	var grid_1 = __webpack_require__(5);
 	var adapter = new odata_1.ODataAdapter();
 	ReactDOM.render(React.createElement(grid_1.Grid, {adapter: adapter}), document.getElementById("example"));
 
@@ -70,17 +70,9 @@
 /***/ function(module, exports, __webpack_require__) {
 
 	"use strict";
-	var __extends = (this && this.__extends) || function (d, b) {
-	    for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p];
-	    function __() { this.constructor = d; }
-	    d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
-	};
-	var adapter_1 = __webpack_require__(4);
-	var Renderers = __webpack_require__(5);
-	var ODataAdapter = (function (_super) {
-	    __extends(ODataAdapter, _super);
+	var Renderers = __webpack_require__(4);
+	var ODataAdapter = (function () {
 	    function ODataAdapter() {
-	        _super.apply(this, arguments);
 	    }
 	    ODataAdapter.prototype.getColumns = function () {
 	        return new Promise(function (resolve, reject) {
@@ -114,7 +106,7 @@
 	        }
 	        return uri;
 	    };
-	    ODataAdapter.prototype.find = function (query) {
+	    ODataAdapter.prototype.getRows = function (query) {
 	        var _this = this;
 	        var uri = this.buildUri(ODataAdapter.URI, query);
 	        return new Promise(function (resolve, reject) {
@@ -145,25 +137,12 @@
 	        { key: "Rating", width: 70, textAlign: "right" }
 	    ];
 	    return ODataAdapter;
-	}(adapter_1.Adapter));
+	}());
 	exports.ODataAdapter = ODataAdapter;
 
 
 /***/ },
 /* 4 */
-/***/ function(module, exports) {
-
-	"use strict";
-	var Adapter = (function () {
-	    function Adapter() {
-	    }
-	    return Adapter;
-	}());
-	exports.Adapter = Adapter;
-
-
-/***/ },
-/* 5 */
 /***/ function(module, exports, __webpack_require__) {
 
 	"use strict";
@@ -177,7 +156,7 @@
 
 
 /***/ },
-/* 6 */
+/* 5 */
 /***/ function(module, exports, __webpack_require__) {
 
 	"use strict";
@@ -187,9 +166,9 @@
 	    d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
 	};
 	var React = __webpack_require__(1);
-	var header_1 = __webpack_require__(7);
-	var body_1 = __webpack_require__(8);
-	var settings_1 = __webpack_require__(11);
+	var header_1 = __webpack_require__(6);
+	var body_1 = __webpack_require__(7);
+	var settings_1 = __webpack_require__(10);
 	var Grid = (function (_super) {
 	    __extends(Grid, _super);
 	    function Grid(props) {
@@ -228,13 +207,13 @@
 	                prevState.columns = columns;
 	                prevState.select = columns.map(function (c) { return c.key; });
 	                return prevState;
-	            }, function () { _this.load(); });
+	            }, function () { _this.loadRows(); });
 	        });
 	    };
-	    Grid.prototype.load = function () {
+	    Grid.prototype.loadRows = function () {
 	        var _this = this;
 	        var query = this.buildQuery();
-	        this.props.adapter.find(query).then(function (entities) {
+	        this.props.adapter.getRows(query).then(function (entities) {
 	            _this.setState(function (prevState, props) {
 	                prevState.entities = entities;
 	                prevState.selection = [];
@@ -286,7 +265,7 @@
 	            }
 	            prevState.entities = [];
 	            return prevState;
-	        }, function () { _this.load(); });
+	        }, function () { _this.loadRows(); });
 	    };
 	    Grid.prototype.handleScroll = function (e) {
 	        var scrollable = e.target;
@@ -309,15 +288,15 @@
 	            header.style.width = "auto";
 	        }
 	    };
-	    Grid.prototype.handleContextMenu = function (e) {
-	        e.preventDefault();
+	    Grid.prototype.handleContextMenu = function () {
 	        this.setState(function (prevState, props) {
-	            prevState.inSettings = !prevState.inSettings;
+	            prevState.inSettings = true;
 	            return prevState;
 	        });
 	    };
-	    Grid.prototype.handleSettings = function (select) {
+	    Grid.prototype.saveSettings = function (select) {
 	        this.setState(function (prevState, props) {
+	            prevState.inSettings = false;
 	            prevState.select = select;
 	            return prevState;
 	        });
@@ -325,7 +304,13 @@
 	    Grid.prototype.render = function () {
 	        var _this = this;
 	        var allSelected = this.state.selection.length > 0;
-	        return (React.createElement("div", {className: "react-grid", onContextMenu: function (e) { return _this.handleContextMenu(e); }}, React.createElement("div", {className: "react-grid-scrollable", onScroll: function (e) { return _this.handleScroll(e); }}, React.createElement("div", {className: "react-grid-inner"}, React.createElement(header_1.Header, {columns: this.columns, selected: allSelected, onSelectAll: function () { return _this.handleSelectAll(); }, sorting: this.state.sorting, onSort: function (key) { return _this.handleSort(key); }}), React.createElement(body_1.Body, {columns: this.columns, entities: this.state.entities, selection: this.state.selection, onSelect: function (index) { return _this.handleSelect(index); }}))), React.createElement(settings_1.Settings, {visible: this.state.inSettings, columns: this.state.columns, select: this.state.select, onChange: function (select) { return _this.handleSettings(select); }})));
+	        return (React.createElement("div", {className: "react-grid"}, 
+	            React.createElement("div", {className: "scrollable", onScroll: function (e) { return _this.handleScroll(e); }}, 
+	                React.createElement("div", {className: "inner"}, 
+	                    React.createElement(header_1.Header, {columns: this.columns, selected: allSelected, onSelectAll: function () { return _this.handleSelectAll(); }, sorting: this.state.sorting, onSort: function (key) { return _this.handleSort(key); }, onContextMenu: function () { return _this.handleContextMenu(); }}), 
+	                    React.createElement(body_1.Body, {columns: this.columns, entities: this.state.entities, selection: this.state.selection, onSelect: function (index) { return _this.handleSelect(index); }}))
+	            ), 
+	            React.createElement(settings_1.Settings, {visible: this.state.inSettings, columns: this.state.columns, select: this.state.select, onSave: function (select) { return _this.saveSettings(select); }})));
 	    };
 	    return Grid;
 	}(React.Component));
@@ -333,7 +318,7 @@
 
 
 /***/ },
-/* 7 */
+/* 6 */
 /***/ function(module, exports, __webpack_require__) {
 
 	"use strict";
@@ -368,12 +353,18 @@
 	            return SortState.Disabled;
 	        }
 	    };
+	    Header.prototype.onContextMenu = function (e) {
+	        e.preventDefault();
+	        this.props.onContextMenu();
+	    };
 	    Header.prototype.render = function () {
 	        var _this = this;
-	        return (React.createElement("div", {className: "react-grid-header"}, React.createElement(CheckboxHeaderCell, {checked: this.props.selected, onCheck: this.props.onSelectAll}), this.props.columns.map(function (column) {
-	            var title = column.title || column.key;
-	            return (React.createElement(HeaderCell, {key: column.key, title: title, width: column.width, onSort: function () { return _this.props.onSort(column.key); }, sortState: _this.getSortState(column)}));
-	        })));
+	        return (React.createElement("div", {className: "header", onContextMenu: this.onContextMenu.bind(this)}, 
+	            React.createElement(CheckboxHeaderCell, {checked: this.props.selected, onCheck: this.props.onSelectAll}), 
+	            this.props.columns.map(function (column) {
+	                var title = column.title || column.key;
+	                return (React.createElement(HeaderCell, {key: column.key, title: title, width: column.width, onSort: function () { return _this.props.onSort(column.key); }, sortState: _this.getSortState(column)}));
+	            })));
 	    };
 	    Header.defaultProps = {
 	        sorting: {}
@@ -394,7 +385,7 @@
 	        configurable: true
 	    });
 	    HeaderCell.prototype.handleSort = function () {
-	        if (this.sortEnabled) {
+	        if (this.sortEnabled && this.props.onSort != undefined) {
 	            this.props.onSort();
 	        }
 	    };
@@ -414,8 +405,10 @@
 	                sortable = React.createElement("span", {className: "icon-sort"});
 	                break;
 	        }
-	        var sortableClass = (this.sortEnabled ? "react-grid-header-cell sortable" : "react-grid-header-cell");
-	        return (React.createElement("div", {style: width, className: sortableClass, onClick: function () { return _this.handleSort(); }}, React.createElement("span", {style: maxWidth, className: "title", title: this.props.title}, this.props.title), sortable));
+	        var sortableClass = (this.sortEnabled ? "header-cell sortable" : "header-cell");
+	        return (React.createElement("div", {style: width, className: sortableClass, onClick: function () { return _this.handleSort(); }}, 
+	            React.createElement("span", {style: maxWidth, className: "title", title: this.props.title}, this.props.title), 
+	            sortable));
 	    };
 	    HeaderCell.defaultProps = {
 	        width: 100,
@@ -436,7 +429,9 @@
 	        };
 	    };
 	    CheckboxHeaderCell.prototype.render = function () {
-	        return (React.createElement("div", {onClick: this.props.onCheck, style: this.style(), className: "react-grid-header-cell"}, React.createElement("input", {type: "checkbox", checked: this.props.checked, readOnly: true})));
+	        return (React.createElement("div", {onClick: this.props.onCheck, style: this.style(), className: "header-cell"}, 
+	            React.createElement("input", {type: "checkbox", checked: this.props.checked, readOnly: true})
+	        ));
 	    };
 	    CheckboxHeaderCell.defaultProps = {
 	        checked: false
@@ -444,6 +439,35 @@
 	    return CheckboxHeaderCell;
 	}(React.Component));
 	exports.CheckboxHeaderCell = CheckboxHeaderCell;
+
+
+/***/ },
+/* 7 */
+/***/ function(module, exports, __webpack_require__) {
+
+	"use strict";
+	var __extends = (this && this.__extends) || function (d, b) {
+	    for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p];
+	    function __() { this.constructor = d; }
+	    d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
+	};
+	var React = __webpack_require__(1);
+	var row_1 = __webpack_require__(8);
+	var Body = (function (_super) {
+	    __extends(Body, _super);
+	    function Body() {
+	        _super.apply(this, arguments);
+	    }
+	    Body.prototype.render = function () {
+	        var _this = this;
+	        return (React.createElement("div", {className: "body"}, this.props.entities.map(function (entity, index) {
+	            var selected = _this.props.selection.indexOf(entity.id) != -1;
+	            return (React.createElement(row_1.Row, {key: entity.id, entity: entity, columns: _this.props.columns, selected: selected, onSelect: function () { return _this.props.onSelect(index); }}));
+	        })));
+	    };
+	    return Body;
+	}(React.Component));
+	exports.Body = Body;
 
 
 /***/ },
@@ -457,36 +481,7 @@
 	    d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
 	};
 	var React = __webpack_require__(1);
-	var row_1 = __webpack_require__(9);
-	var Body = (function (_super) {
-	    __extends(Body, _super);
-	    function Body() {
-	        _super.apply(this, arguments);
-	    }
-	    Body.prototype.render = function () {
-	        var _this = this;
-	        return (React.createElement("div", {className: "react-grid-body"}, this.props.entities.map(function (entity, index) {
-	            var selected = _this.props.selection.indexOf(entity.id) != -1;
-	            return (React.createElement(row_1.Row, {key: entity.id, entity: entity, columns: _this.props.columns, selected: selected, onSelect: function () { return _this.props.onSelect(index); }}));
-	        })));
-	    };
-	    return Body;
-	}(React.Component));
-	exports.Body = Body;
-
-
-/***/ },
-/* 9 */
-/***/ function(module, exports, __webpack_require__) {
-
-	"use strict";
-	var __extends = (this && this.__extends) || function (d, b) {
-	    for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p];
-	    function __() { this.constructor = d; }
-	    d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
-	};
-	var React = __webpack_require__(1);
-	var cell_1 = __webpack_require__(10);
+	var cell_1 = __webpack_require__(9);
 	var Row = (function (_super) {
 	    __extends(Row, _super);
 	    function Row() {
@@ -494,10 +489,12 @@
 	    }
 	    Row.prototype.render = function () {
 	        var _this = this;
-	        return (React.createElement("div", {className: "react-grid-row"}, React.createElement(cell_1.CheckboxCell, {checked: this.props.selected, onCheck: this.props.onSelect}), this.props.columns.map(function (column) {
-	            var value = _this.props.entity[column.key];
-	            return (React.createElement(cell_1.Cell, {key: column.key, value: value, width: column.width, textAlign: column.textAlign, render: column.render}));
-	        })));
+	        return (React.createElement("div", {className: "row"}, 
+	            React.createElement(cell_1.CheckboxCell, {checked: this.props.selected, onCheck: this.props.onSelect}), 
+	            this.props.columns.map(function (column) {
+	                var value = _this.props.entity[column.key];
+	                return (React.createElement(cell_1.Cell, {key: column.key, value: value, width: column.width, textAlign: column.textAlign, render: column.render}));
+	            })));
 	    };
 	    return Row;
 	}(React.Component));
@@ -505,7 +502,7 @@
 
 
 /***/ },
-/* 10 */
+/* 9 */
 /***/ function(module, exports, __webpack_require__) {
 
 	"use strict";
@@ -536,7 +533,7 @@
 	    };
 	    Cell.prototype.render = function () {
 	        var value = this.props.value;
-	        return (React.createElement("div", {style: this.style(), className: "react-grid-row-cell"}, this.value()));
+	        return (React.createElement("div", {style: this.style(), className: "cell"}, this.value()));
 	    };
 	    Cell.defaultProps = {
 	        width: 100,
@@ -557,7 +554,9 @@
 	        };
 	    };
 	    CheckboxCell.prototype.render = function () {
-	        return (React.createElement("div", {onClick: this.props.onCheck, style: this.style(), className: "react-grid-row-cell"}, React.createElement("input", {type: "checkbox", checked: this.props.checked, readOnly: true})));
+	        return (React.createElement("div", {onClick: this.props.onCheck, style: this.style(), className: "cell"}, 
+	            React.createElement("input", {type: "checkbox", checked: this.props.checked, readOnly: true})
+	        ));
 	    };
 	    CheckboxCell.defaultProps = {
 	        checked: false
@@ -568,7 +567,7 @@
 
 
 /***/ },
-/* 11 */
+/* 10 */
 /***/ function(module, exports, __webpack_require__) {
 
 	"use strict";
@@ -578,34 +577,51 @@
 	    d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
 	};
 	var React = __webpack_require__(1);
-	var cell_1 = __webpack_require__(10);
-	var header_1 = __webpack_require__(7);
+	exports.OperatorSelect = function (value) {
+	    return (React.createElement("select", {defaultValue: value}, 
+	        React.createElement("option", {value: "eq"}, "equals"), 
+	        React.createElement("option", {value: "ne"}, "not equals")));
+	};
+	exports.ValueField = function (value) {
+	    return (React.createElement("input", {type: "text", defaultValue: value}));
+	};
 	var Settings = (function (_super) {
 	    __extends(Settings, _super);
 	    function Settings(props) {
 	        _super.call(this, props);
+	        this.state = {
+	            select: props.select
+	        };
 	    }
 	    Settings.prototype.handleSelect = function (key) {
-	        var select = this.props.select;
-	        var index = select.indexOf(key);
-	        if (index === -1) {
-	            select.push(key);
-	        }
-	        else {
-	            select.splice(index, 1);
-	        }
-	        this.props.onChange(select);
+	        this.setState(function (prevState, props) {
+	            var index = prevState.select.indexOf(key);
+	            if (index === -1) {
+	                prevState.select.push(key);
+	            }
+	            else {
+	                prevState.select.splice(index, 1);
+	            }
+	            return prevState;
+	        });
 	    };
 	    Settings.prototype.render = function () {
 	        var _this = this;
 	        var style = {
 	            display: this.props.visible ? "block" : "none"
 	        };
-	        return (React.createElement("div", {className: "react-grid-settings", style: style}, React.createElement("div", {className: "react-grid-header"}, React.createElement("div", {className: "react-grid-header-cell"}, "Grid Settings")), React.createElement("div", {className: "react-grid-header"}, React.createElement(header_1.HeaderCell, {title: "Column name", width: 164})), React.createElement("div", {className: "react-grid-body"}, this.props.columns.map(function (column) {
-	            var title = column.title || column.key;
-	            var visible = _this.props.select.indexOf(column.key) != -1;
-	            return (React.createElement("div", {key: column.key, className: "react-grid-row"}, React.createElement(cell_1.CheckboxCell, {checked: visible, onCheck: function () { return _this.handleSelect(column.key); }}), React.createElement(cell_1.Cell, {value: title, width: 140})));
-	        }))));
+	        return (React.createElement("div", {className: "settings", style: style}, 
+	            React.createElement("div", {className: "title"}, "Grid Settings"), 
+	            this.props.columns.map(function (column) {
+	                var title = column.title || column.key;
+	                var visible = _this.state.select.indexOf(column.key) != -1;
+	                return (React.createElement("div", {key: column.key, className: "row"}, 
+	                    React.createElement("input", {type: "checkbox", name: column.key, id: column.key, checked: visible, onClick: function () { return _this.handleSelect(column.key); }}), 
+	                    React.createElement("label", {htmlFor: column.key}, title)));
+	            }), 
+	            React.createElement("div", {className: "actions"}, 
+	                React.createElement("button", {onClick: function () { return _this.props.onSave(_this.state.select); }}, "Save")
+	            )));
 	    };
 	    Settings.defaultProps = {
 	        visible: false

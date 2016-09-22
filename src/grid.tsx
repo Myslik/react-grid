@@ -1,7 +1,5 @@
-/// <reference path="../typings/index.d.ts" />
-
 import * as React from "react";
-import { IEntity, IColumn, IQuery, IFilter, ISorting, IAdapter } from "./adapter";
+import { IRow, IColumn, IQuery, IFilter, ISorting, IAdapter } from "./adapter";
 import { Header } from "./header";
 import { Body } from "./body";
 import { Settings } from "./settings";
@@ -11,13 +9,13 @@ export interface IGridProps {
 }
 
 export interface IGridState {
-    entities: IEntity[];
+    entities: IRow[];
     selection: string[];
     columns: IColumn[];
     sorting?: ISorting;
     filter?: IFilter[];
-    select?: string[];
-    inSettings?: boolean;
+    select: string[];
+    inSettings: boolean;
 }
 
 export class Grid extends React.Component<IGridProps, IGridState> {
@@ -60,7 +58,7 @@ export class Grid extends React.Component<IGridProps, IGridState> {
 
     loadRows() {
         var query = this.buildQuery();
-        this.props.adapter.find(query).then(entities => {
+        this.props.adapter.getRows(query).then(entities => {
             this.setState((prevState, props) => {
                 prevState.entities = entities;
                 prevState.selection = [];
@@ -112,7 +110,7 @@ export class Grid extends React.Component<IGridProps, IGridState> {
         }, () => { this.loadRows(); });
     }
 
-    handleScroll(e: React.UIEvent) {
+    handleScroll(e: React.UIEvent<HTMLDivElement>) {
         var scrollable = e.target as HTMLDivElement;
         var scrollTop = scrollable.scrollTop;
         var scrollLeft = scrollable.scrollLeft;
@@ -134,15 +132,14 @@ export class Grid extends React.Component<IGridProps, IGridState> {
         }
     }
 
-    handleContextMenu(e: React.MouseEvent) {
-        e.preventDefault();
+    handleContextMenu() {
         this.setState((prevState, props) => {
             prevState.inSettings = true;
             return prevState;
         });
     }
 
-    handleSettings(select: string[]) {
+    saveSettings(select: string[]) {
         this.setState((prevState, props) => {
             prevState.inSettings = false;
             prevState.select = select;
@@ -162,7 +159,7 @@ export class Grid extends React.Component<IGridProps, IGridState> {
                             onSelectAll={ () => this.handleSelectAll() }
                             sorting={this.state.sorting}
                             onSort={ (key) => this.handleSort(key) }
-                            onContextMenu={ (e) => this.handleContextMenu(e) } />
+                            onContextMenu={ () => this.handleContextMenu() } />
                         <Body
                             columns={this.columns}
                             entities={this.state.entities}
@@ -174,7 +171,7 @@ export class Grid extends React.Component<IGridProps, IGridState> {
                     visible={this.state.inSettings}
                     columns={this.state.columns}
                     select={this.state.select}
-                    onChange={ (select) => this.handleSettings(select) } />
+                    onSave={ (select) => this.saveSettings(select) } />
             </div>
         );
     }

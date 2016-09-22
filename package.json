@@ -3,15 +3,18 @@
   "version": "0.0.1",
   "private": true,
   "dependencies": {
-    "chance": "^1.0.4",
-    "es6-promise": "^3.2.1",
-    "react": "^15.1.0",
-    "react-dom": "^15.1.0"
+    "@types/es6-promise": "0.0.32",
+    "@types/react": "^0.14.36",
+    "@types/react-dom": "^0.14.17",
+    "es6-promise": "^3.3.1",
+    "react": "^15.3.2",
+    "react-dom": "^15.3.2"
   },
   "devDependencies": {
     "source-map-loader": "^0.1.5",
     "ts-loader": "^0.8.2",
-    "webpack": "^1.13.1",
-    "webpack-dev-server": "^1.14.1"
+    "typescript": "^2.0.3",
+    "webpack": "^1.13.2",
+    "webpack-dev-server": "^1.16.1"
   }
 }

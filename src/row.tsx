@@ -1,11 +1,9 @@
-/// <reference path="../typings/index.d.ts" />
-
 import * as React from "react";
-import { IEntity, IColumn } from "./adapter";
+import { IRow, IColumn } from "./adapter";
 import { CheckboxCell, Cell } from "./cell";
 
 export interface IRowProps {
-    entity: IEntity,
+    entity: IRow,
     columns: IColumn[],
     selected: boolean,
     onSelect: () => void

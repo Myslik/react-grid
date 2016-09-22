@@ -1,12 +1,10 @@
-/// <reference path="../typings/index.d.ts" />
-
 import * as React from "react";
-import { IEntity, IColumn } from "./adapter";
+import { IRow, IColumn } from "./adapter";
 import { Row } from "./row";
 
 export interface IBodyProps {
     columns: IColumn[];
-    entities: IEntity[];
+    entities: IRow[];
     selection: string[];
     onSelect: (index: number) => void;
 }
