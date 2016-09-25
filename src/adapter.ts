@@ -13,6 +13,7 @@ export interface IColumn {
     width?: number;
     textAlign?: any;
     sortable?: boolean;
+    filterable?: boolean;
     render?: IRender;
 }
 

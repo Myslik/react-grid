@@ -96,7 +96,6 @@
 	
 	.header-cell {
         .header-cell();
-		.ellipsis();
 		padding: @grid-cell-padding;
 		cursor: default;
 
@@ -126,6 +125,42 @@
 			float: left;
     		text-align: center;
 			color: @grid-icon-highlight;
+		}
+
+		.icon-filter {
+			float: right;
+			text-align: center;
+			color: @grid-icon-color;
+
+			&.active {
+				color: @grid-icon-highlight;
+			}
+		}
+
+		&:last-child .dropdown .content {
+			left: auto;
+            right: 0;
+        }
+	}
+
+	.dropdown {
+		position: relative;
+
+		.content {
+			display: none;
+	    	position: absolute;
+			top: 100%;
+			left: 0;
+			background-color: @grid-bg;
+			min-width: 160px;
+			border: 1px solid rgba(0,0,0,.15);
+			box-shadow: 0 6px 12px rgba(0,0,0,.175);
+			padding: @grid-cell-padding;
+			z-index: 2;
+		}
+
+		&.open .content {
+			display: block;
 		}
 	}
 	

@@ -1,6 +1,7 @@
 import * as React from "react";
 import { IRow, IColumn } from "./adapter";
-import { CheckboxCell, Cell } from "./cell";
+import { Cell } from "./cell";
+import { CheckboxCell } from "./selection";
 
 export interface IRowProps {
     entity: IRow,

@@ -132,7 +132,7 @@
 	    ODataAdapter.IDENTIFIER = "ID";
 	    ODataAdapter.COLUMNS = [
 	        { key: "ID", width: 70 },
-	        { key: "Name", width: 140, sortable: true, render: Renderers.Strong },
+	        { key: "Name", width: 140, sortable: true, render: Renderers.Strong, filterable: true },
 	        { key: "Description", width: 250, sortable: true },
 	        { key: "Rating", width: 70, textAlign: "right" }
 	    ];
@@ -167,8 +167,8 @@
 	};
 	var React = __webpack_require__(1);
 	var header_1 = __webpack_require__(6);
-	var body_1 = __webpack_require__(7);
-	var settings_1 = __webpack_require__(10);
+	var body_1 = __webpack_require__(8);
+	var settings_1 = __webpack_require__(11);
 	var Grid = (function (_super) {
 	    __extends(Grid, _super);
 	    function Grid(props) {
@@ -271,8 +271,8 @@
 	        var scrollable = e.target;
 	        var scrollTop = scrollable.scrollTop;
 	        var scrollLeft = scrollable.scrollLeft;
-	        var header = scrollable.getElementsByClassName('react-grid-header')[0];
-	        var body = scrollable.getElementsByClassName('react-grid-body')[0];
+	        var header = scrollable.getElementsByClassName('header')[0];
+	        var body = scrollable.getElementsByClassName('body')[0];
 	        if (scrollTop != 0 || scrollLeft != 0) {
 	            body.style.marginTop = header.offsetHeight + "px";
 	            header.style.position = "absolute";
@@ -290,7 +290,6 @@
 	    };
 	    Grid.prototype.handleContextMenu = function () {
 	        this.setState(function (prevState, props) {
-	            prevState.inSettings = true;
 	            return prevState;
 	        });
 	    };
@@ -328,6 +327,7 @@
 	    d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
 	};
 	var React = __webpack_require__(1);
+	var selection_1 = __webpack_require__(7);
 	(function (SortState) {
 	    SortState[SortState["Disabled"] = 0] = "Disabled";
 	    SortState[SortState["Enabled"] = 1] = "Enabled";
@@ -335,6 +335,12 @@
 	    SortState[SortState["Descending"] = 3] = "Descending";
 	})(exports.SortState || (exports.SortState = {}));
 	var SortState = exports.SortState;
+	(function (FilterState) {
+	    FilterState[FilterState["Disabled"] = 0] = "Disabled";
+	    FilterState[FilterState["Enabled"] = 1] = "Enabled";
+	    FilterState[FilterState["Active"] = 2] = "Active";
+	})(exports.FilterState || (exports.FilterState = {}));
+	var FilterState = exports.FilterState;
 	var Header = (function (_super) {
 	    __extends(Header, _super);
 	    function Header() {
@@ -353,6 +359,14 @@
 	            return SortState.Disabled;
 	        }
 	    };
+	    Header.prototype.getFilterState = function (column) {
+	        if (column.filterable) {
+	            return FilterState.Enabled;
+	        }
+	        else {
+	            return FilterState.Disabled;
+	        }
+	    };
 	    Header.prototype.onContextMenu = function (e) {
 	        e.preventDefault();
 	        this.props.onContextMenu();
@@ -360,10 +374,10 @@
 	    Header.prototype.render = function () {
 	        var _this = this;
 	        return (React.createElement("div", {className: "header", onContextMenu: this.onContextMenu.bind(this)}, 
-	            React.createElement(CheckboxHeaderCell, {checked: this.props.selected, onCheck: this.props.onSelectAll}), 
+	            React.createElement(selection_1.CheckboxHeaderCell, {checked: this.props.selected, onCheck: this.props.onSelectAll}), 
 	            this.props.columns.map(function (column) {
 	                var title = column.title || column.key;
-	                return (React.createElement(HeaderCell, {key: column.key, title: title, width: column.width, onSort: function () { return _this.props.onSort(column.key); }, sortState: _this.getSortState(column)}));
+	                return (React.createElement(HeaderCell, {key: column.key, title: title, width: column.width, onSort: function () { return _this.props.onSort(column.key); }, sortState: _this.getSortState(column), filterState: _this.getFilterState(column)}));
 	            })));
 	    };
 	    Header.defaultProps = {
@@ -384,6 +398,13 @@
 	        enumerable: true,
 	        configurable: true
 	    });
+	    Object.defineProperty(HeaderCell.prototype, "filterEnabled", {
+	        get: function () {
+	            return this.props.filterState != FilterState.Disabled;
+	        },
+	        enumerable: true,
+	        configurable: true
+	    });
 	    HeaderCell.prototype.handleSort = function () {
 	        if (this.sortEnabled && this.props.onSort != undefined) {
 	            this.props.onSort();
@@ -391,32 +412,110 @@
 	    };
 	    HeaderCell.prototype.render = function () {
 	        var _this = this;
-	        var width = { width: this.props.width + 'px' };
-	        var maxWidth = { maxWidth: this.props.width - 10 - (this.sortEnabled ? 17 : 0) + 'px' };
-	        var sortable;
-	        switch (this.props.sortState) {
-	            case SortState.Ascending:
-	                sortable = React.createElement("span", {className: "icon-sort-up"});
-	                break;
-	            case SortState.Descending:
-	                sortable = React.createElement("span", {className: "icon-sort-down"});
-	                break;
-	            case SortState.Enabled:
-	                sortable = React.createElement("span", {className: "icon-sort"});
-	                break;
+	        var headerCellStyle = { width: this.props.width + 'px' };
+	        var headerCellClasses = ["header-cell", "dropdown"];
+	        var maxWidth = this.props.width - 10;
+	        if (this.sortEnabled) {
+	            headerCellClasses.push("sortable");
+	            maxWidth = maxWidth - 17;
 	        }
-	        var sortableClass = (this.sortEnabled ? "header-cell sortable" : "header-cell");
-	        return (React.createElement("div", {style: width, className: sortableClass, onClick: function () { return _this.handleSort(); }}, 
-	            React.createElement("span", {style: maxWidth, className: "title", title: this.props.title}, this.props.title), 
-	            sortable));
+	        if (this.filterEnabled) {
+	            maxWidth = maxWidth - 17;
+	        }
+	        var titleStyle = { maxWidth: maxWidth + 'px' };
+	        return (React.createElement("div", {style: headerCellStyle, className: headerCellClasses.join(" "), onClick: function () { return _this.handleSort(); }}, 
+	            React.createElement("span", {style: titleStyle, className: "title", title: this.props.title}, this.props.title), 
+	            React.createElement(Sortable, {sortState: this.props.sortState}), 
+	            React.createElement(Filterable, {filterState: this.props.filterState}), 
+	            React.createElement("div", {className: "content"}, 
+	                React.createElement("input", {type: "text"})
+	            )));
 	    };
 	    HeaderCell.defaultProps = {
-	        width: 100,
-	        sortState: SortState.Disabled
+	        width: 100
 	    };
 	    return HeaderCell;
 	}(React.Component));
 	exports.HeaderCell = HeaderCell;
+	var Sortable = (function (_super) {
+	    __extends(Sortable, _super);
+	    function Sortable() {
+	        _super.apply(this, arguments);
+	    }
+	    Sortable.prototype.render = function () {
+	        switch (this.props.sortState) {
+	            case SortState.Ascending:
+	                return React.createElement("span", {className: "icon-sort-up"});
+	            case SortState.Descending:
+	                return React.createElement("span", {className: "icon-sort-down"});
+	            case SortState.Enabled:
+	                return React.createElement("span", {className: "icon-sort"});
+	            default:
+	                return null;
+	        }
+	    };
+	    Sortable.defaultProps = {
+	        sortState: SortState.Disabled
+	    };
+	    return Sortable;
+	}(React.Component));
+	exports.Sortable = Sortable;
+	var Filterable = (function (_super) {
+	    __extends(Filterable, _super);
+	    function Filterable() {
+	        _super.apply(this, arguments);
+	    }
+	    Filterable.prototype.render = function () {
+	        switch (this.props.filterState) {
+	            case FilterState.Enabled:
+	                return React.createElement("span", {className: "icon-filter"});
+	            case FilterState.Active:
+	                return React.createElement("span", {className: "icon-filter active"});
+	            default:
+	                return null;
+	        }
+	    };
+	    Filterable.defaultProps = {
+	        filterState: FilterState.Disabled
+	    };
+	    return Filterable;
+	}(React.Component));
+	exports.Filterable = Filterable;
+
+
+/***/ },
+/* 7 */
+/***/ function(module, exports, __webpack_require__) {
+
+	"use strict";
+	var __extends = (this && this.__extends) || function (d, b) {
+	    for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p];
+	    function __() { this.constructor = d; }
+	    d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
+	};
+	var React = __webpack_require__(1);
+	var CheckboxCell = (function (_super) {
+	    __extends(CheckboxCell, _super);
+	    function CheckboxCell(props) {
+	        _super.call(this, props);
+	    }
+	    CheckboxCell.prototype.style = function () {
+	        return {
+	            padding: '1px',
+	            width: '24px'
+	        };
+	    };
+	    CheckboxCell.prototype.render = function () {
+	        return (React.createElement("div", {onClick: this.props.onCheck, style: this.style(), className: "cell"}, 
+	            React.createElement("input", {type: "checkbox", checked: this.props.checked, readOnly: true})
+	        ));
+	    };
+	    CheckboxCell.defaultProps = {
+	        checked: false
+	    };
+	    return CheckboxCell;
+	}(React.Component));
+	exports.CheckboxCell = CheckboxCell;
 	var CheckboxHeaderCell = (function (_super) {
 	    __extends(CheckboxHeaderCell, _super);
 	    function CheckboxHeaderCell(props) {
@@ -442,7 +541,7 @@
 
 
 /***/ },
-/* 7 */
+/* 8 */
 /***/ function(module, exports, __webpack_require__) {
 
 	"use strict";
@@ -452,7 +551,7 @@
 	    d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
 	};
 	var React = __webpack_require__(1);
-	var row_1 = __webpack_require__(8);
+	var row_1 = __webpack_require__(9);
 	var Body = (function (_super) {
 	    __extends(Body, _super);
 	    function Body() {
@@ -471,7 +570,7 @@
 
 
 /***/ },
-/* 8 */
+/* 9 */
 /***/ function(module, exports, __webpack_require__) {
 
 	"use strict";
@@ -481,7 +580,8 @@
 	    d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
 	};
 	var React = __webpack_require__(1);
-	var cell_1 = __webpack_require__(9);
+	var cell_1 = __webpack_require__(10);
+	var selection_1 = __webpack_require__(7);
 	var Row = (function (_super) {
 	    __extends(Row, _super);
 	    function Row() {
@@ -490,7 +590,7 @@
 	    Row.prototype.render = function () {
 	        var _this = this;
 	        return (React.createElement("div", {className: "row"}, 
-	            React.createElement(cell_1.CheckboxCell, {checked: this.props.selected, onCheck: this.props.onSelect}), 
+	            React.createElement(selection_1.CheckboxCell, {checked: this.props.selected, onCheck: this.props.onSelect}), 
 	            this.props.columns.map(function (column) {
 	                var value = _this.props.entity[column.key];
 	                return (React.createElement(cell_1.Cell, {key: column.key, value: value, width: column.width, textAlign: column.textAlign, render: column.render}));
@@ -502,7 +602,7 @@
 
 
 /***/ },
-/* 9 */
+/* 10 */
 /***/ function(module, exports, __webpack_require__) {
 
 	"use strict";
@@ -542,32 +642,10 @@
 	    return Cell;
 	}(React.Component));
 	exports.Cell = Cell;
-	var CheckboxCell = (function (_super) {
-	    __extends(CheckboxCell, _super);
-	    function CheckboxCell(props) {
-	        _super.call(this, props);
-	    }
-	    CheckboxCell.prototype.style = function () {
-	        return {
-	            padding: '1px',
-	            width: '24px'
-	        };
-	    };
-	    CheckboxCell.prototype.render = function () {
-	        return (React.createElement("div", {onClick: this.props.onCheck, style: this.style(), className: "cell"}, 
-	            React.createElement("input", {type: "checkbox", checked: this.props.checked, readOnly: true})
-	        ));
-	    };
-	    CheckboxCell.defaultProps = {
-	        checked: false
-	    };
-	    return CheckboxCell;
-	}(React.Component));
-	exports.CheckboxCell = CheckboxCell;
 
 
 /***/ },
-/* 10 */
+/* 11 */
 /***/ function(module, exports, __webpack_require__) {
 
 	"use strict";

@@ -1,7 +1,5 @@
 import * as React from "react";
 import { IColumn, IRender } from "./adapter";
-import { Cell, CheckboxCell } from "./cell";
-import { HeaderCell } from "./header";
 
 export interface ISettingsProps {
     visible: boolean;

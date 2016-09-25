@@ -10,7 +10,7 @@ export class ODataAdapter implements IAdapter {
     public static IDENTIFIER: string = "ID";
     public static COLUMNS: IColumn[] = [
         { key: "ID", width: 70 },
-        { key: "Name", width: 140, sortable: true, render: Renderers.Strong },
+        { key: "Name", width: 140, sortable: true, render: Renderers.Strong, filterable: true },
         { key: "Description", width: 250, sortable: true },
         { key: "Rating", width: 70, textAlign: "right" }
     ];

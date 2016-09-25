@@ -38,33 +38,3 @@ export class Cell extends React.Component<ICellProps, any> {
         );
     }
 }
-
-export interface ICheckboxCellProps {
-    checked: boolean;
-    onCheck: () => void;
-}
-
-export class CheckboxCell extends React.Component<ICheckboxCellProps, void> {
-    static defaultProps = {
-        checked: false
-    };
-
-    constructor(props: ICheckboxCellProps) {
-        super(props);
-    }
-
-    style(): React.CSSProperties {
-        return {
-            padding: '1px',
-            width: '24px'
-        };
-    }
-
-    render() {
-        return (
-            <div onClick={this.props.onCheck} style={ this.style() } className = "cell">
-                <input type="checkbox" checked={this.props.checked} readOnly />
-            </div>
-        );
-    }
-}

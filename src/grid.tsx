@@ -115,8 +115,8 @@ export class Grid extends React.Component<IGridProps, IGridState> {
         var scrollTop = scrollable.scrollTop;
         var scrollLeft = scrollable.scrollLeft;
 
-        var header = scrollable.getElementsByClassName('react-grid-header')[0] as HTMLDivElement;
-        var body = scrollable.getElementsByClassName('react-grid-body')[0] as HTMLDivElement;
+        var header = scrollable.getElementsByClassName('header')[0] as HTMLDivElement;
+        var body = scrollable.getElementsByClassName('body')[0] as HTMLDivElement;
         if (scrollTop != 0 || scrollLeft != 0) {
             body.style.marginTop = header.offsetHeight + "px";
             header.style.position = "absolute";
@@ -134,7 +134,7 @@ export class Grid extends React.Component<IGridProps, IGridState> {
 
     handleContextMenu() {
         this.setState((prevState, props) => {
-            prevState.inSettings = true;
+            //prevState.inSettings = true;
             return prevState;
         });
     }

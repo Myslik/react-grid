@@ -51,11 +51,6 @@
   position: relative;
   vertical-align: top;
   border-right: 1px solid #ddd;
-  white-space: nowrap;
-  overflow: hidden;
-  -ms-text-overflow: ellipsis;
-  -o-text-overflow: ellipsis;
-  text-overflow: ellipsis;
   padding: 5px;
   cursor: default;
 }
@@ -81,6 +76,36 @@
   float: left;
   text-align: center;
   color: #009ee1;
+}
+.react-grid .header-cell .icon-filter {
+  float: right;
+  text-align: center;
+  color: #ccc;
+}
+.react-grid .header-cell .icon-filter.active {
+  color: #009ee1;
+}
+.react-grid .header-cell:last-child .dropdown .content {
+  left: auto;
+  right: 0;
+}
+.react-grid .dropdown {
+  position: relative;
+}
+.react-grid .dropdown .content {
+  display: none;
+  position: absolute;
+  top: 100%;
+  left: 0;
+  background-color: #fff;
+  min-width: 160px;
+  border: 1px solid rgba(0, 0, 0, 0.15);
+  box-shadow: 0 6px 12px rgba(0, 0, 0, 0.175);
+  padding: 5px;
+  z-index: 2;
+}
+.react-grid .dropdown.open .content {
+  display: block;
 }
 .react-grid .cell {
   -moz-box-sizing: border-box;
