@@ -167,8 +167,8 @@
 	};
 	var React = __webpack_require__(1);
 	var header_1 = __webpack_require__(6);
-	var body_1 = __webpack_require__(8);
-	var settings_1 = __webpack_require__(11);
+	var body_1 = __webpack_require__(11);
+	var settings_1 = __webpack_require__(14);
 	var Grid = (function (_super) {
 	    __extends(Grid, _super);
 	    function Grid(props) {
@@ -328,19 +328,9 @@
 	};
 	var React = __webpack_require__(1);
 	var selection_1 = __webpack_require__(7);
-	(function (SortState) {
-	    SortState[SortState["Disabled"] = 0] = "Disabled";
-	    SortState[SortState["Enabled"] = 1] = "Enabled";
-	    SortState[SortState["Ascending"] = 2] = "Ascending";
-	    SortState[SortState["Descending"] = 3] = "Descending";
-	})(exports.SortState || (exports.SortState = {}));
-	var SortState = exports.SortState;
-	(function (FilterState) {
-	    FilterState[FilterState["Disabled"] = 0] = "Disabled";
-	    FilterState[FilterState["Enabled"] = 1] = "Enabled";
-	    FilterState[FilterState["Active"] = 2] = "Active";
-	})(exports.FilterState || (exports.FilterState = {}));
-	var FilterState = exports.FilterState;
+	var sorting_1 = __webpack_require__(8);
+	var filtering_1 = __webpack_require__(9);
+	var headerCell_1 = __webpack_require__(10);
 	var Header = (function (_super) {
 	    __extends(Header, _super);
 	    function Header() {
@@ -349,22 +339,22 @@
 	    Header.prototype.getSortState = function (column) {
 	        if (column.sortable) {
 	            if (this.props.sorting && this.props.sorting.key == column.key) {
-	                return this.props.sorting.asc ? SortState.Ascending : SortState.Descending;
+	                return this.props.sorting.asc ? sorting_1.SortState.Ascending : sorting_1.SortState.Descending;
 	            }
 	            else {
-	                return SortState.Enabled;
+	                return sorting_1.SortState.Enabled;
 	            }
 	        }
 	        else {
-	            return SortState.Disabled;
+	            return sorting_1.SortState.Disabled;
 	        }
 	    };
 	    Header.prototype.getFilterState = function (column) {
 	        if (column.filterable) {
-	            return FilterState.Enabled;
+	            return filtering_1.FilterState.Enabled;
 	        }
 	        else {
-	            return FilterState.Disabled;
+	            return filtering_1.FilterState.Disabled;
 	        }
 	    };
 	    Header.prototype.onContextMenu = function (e) {
@@ -377,7 +367,7 @@
 	            React.createElement(selection_1.CheckboxHeaderCell, {checked: this.props.selected, onCheck: this.props.onSelectAll}), 
 	            this.props.columns.map(function (column) {
 	                var title = column.title || column.key;
-	                return (React.createElement(HeaderCell, {key: column.key, title: title, width: column.width, onSort: function () { return _this.props.onSort(column.key); }, sortState: _this.getSortState(column), filterState: _this.getFilterState(column)}));
+	                return (React.createElement(headerCell_1.HeaderCell, {key: column.key, title: title, width: column.width, onSort: function () { return _this.props.onSort(column.key); }, sortState: _this.getSortState(column), filterState: _this.getFilterState(column)}));
 	            })));
 	    };
 	    Header.defaultProps = {
@@ -386,101 +376,6 @@
 	    return Header;
 	}(React.Component));
 	exports.Header = Header;
-	var HeaderCell = (function (_super) {
-	    __extends(HeaderCell, _super);
-	    function HeaderCell() {
-	        _super.apply(this, arguments);
-	    }
-	    Object.defineProperty(HeaderCell.prototype, "sortEnabled", {
-	        get: function () {
-	            return this.props.sortState != SortState.Disabled;
-	        },
-	        enumerable: true,
-	        configurable: true
-	    });
-	    Object.defineProperty(HeaderCell.prototype, "filterEnabled", {
-	        get: function () {
-	            return this.props.filterState != FilterState.Disabled;
-	        },
-	        enumerable: true,
-	        configurable: true
-	    });
-	    HeaderCell.prototype.handleSort = function () {
-	        if (this.sortEnabled && this.props.onSort != undefined) {
-	            this.props.onSort();
-	        }
-	    };
-	    HeaderCell.prototype.render = function () {
-	        var _this = this;
-	        var headerCellStyle = { width: this.props.width + 'px' };
-	        var headerCellClasses = ["header-cell", "dropdown"];
-	        var maxWidth = this.props.width - 10;
-	        if (this.sortEnabled) {
-	            headerCellClasses.push("sortable");
-	            maxWidth = maxWidth - 17;
-	        }
-	        if (this.filterEnabled) {
-	            maxWidth = maxWidth - 17;
-	        }
-	        var titleStyle = { maxWidth: maxWidth + 'px' };
-	        return (React.createElement("div", {style: headerCellStyle, className: headerCellClasses.join(" "), onClick: function () { return _this.handleSort(); }}, 
-	            React.createElement("span", {style: titleStyle, className: "title", title: this.props.title}, this.props.title), 
-	            React.createElement(Sortable, {sortState: this.props.sortState}), 
-	            React.createElement(Filterable, {filterState: this.props.filterState}), 
-	            React.createElement("div", {className: "content"}, 
-	                React.createElement("input", {type: "text"})
-	            )));
-	    };
-	    HeaderCell.defaultProps = {
-	        width: 100
-	    };
-	    return HeaderCell;
-	}(React.Component));
-	exports.HeaderCell = HeaderCell;
-	var Sortable = (function (_super) {
-	    __extends(Sortable, _super);
-	    function Sortable() {
-	        _super.apply(this, arguments);
-	    }
-	    Sortable.prototype.render = function () {
-	        switch (this.props.sortState) {
-	            case SortState.Ascending:
-	                return React.createElement("span", {className: "icon-sort-up"});
-	            case SortState.Descending:
-	                return React.createElement("span", {className: "icon-sort-down"});
-	            case SortState.Enabled:
-	                return React.createElement("span", {className: "icon-sort"});
-	            default:
-	                return null;
-	        }
-	    };
-	    Sortable.defaultProps = {
-	        sortState: SortState.Disabled
-	    };
-	    return Sortable;
-	}(React.Component));
-	exports.Sortable = Sortable;
-	var Filterable = (function (_super) {
-	    __extends(Filterable, _super);
-	    function Filterable() {
-	        _super.apply(this, arguments);
-	    }
-	    Filterable.prototype.render = function () {
-	        switch (this.props.filterState) {
-	            case FilterState.Enabled:
-	                return React.createElement("span", {className: "icon-filter"});
-	            case FilterState.Active:
-	                return React.createElement("span", {className: "icon-filter active"});
-	            default:
-	                return null;
-	        }
-	    };
-	    Filterable.defaultProps = {
-	        filterState: FilterState.Disabled
-	    };
-	    return Filterable;
-	}(React.Component));
-	exports.Filterable = Filterable;
 
 
 /***/ },
@@ -551,7 +446,173 @@
 	    d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
 	};
 	var React = __webpack_require__(1);
-	var row_1 = __webpack_require__(9);
+	(function (SortState) {
+	    SortState[SortState["Disabled"] = 0] = "Disabled";
+	    SortState[SortState["Enabled"] = 1] = "Enabled";
+	    SortState[SortState["Ascending"] = 2] = "Ascending";
+	    SortState[SortState["Descending"] = 3] = "Descending";
+	})(exports.SortState || (exports.SortState = {}));
+	var SortState = exports.SortState;
+	var Sortable = (function (_super) {
+	    __extends(Sortable, _super);
+	    function Sortable() {
+	        _super.apply(this, arguments);
+	    }
+	    Sortable.prototype.render = function () {
+	        switch (this.props.sortState) {
+	            case SortState.Ascending:
+	                return React.createElement("span", {className: "icon-sort-up"});
+	            case SortState.Descending:
+	                return React.createElement("span", {className: "icon-sort-down"});
+	            case SortState.Enabled:
+	                return React.createElement("span", {className: "icon-sort"});
+	            default:
+	                return null;
+	        }
+	    };
+	    Sortable.defaultProps = {
+	        sortState: SortState.Disabled
+	    };
+	    return Sortable;
+	}(React.Component));
+	exports.Sortable = Sortable;
+
+
+/***/ },
+/* 9 */
+/***/ function(module, exports, __webpack_require__) {
+
+	"use strict";
+	var __extends = (this && this.__extends) || function (d, b) {
+	    for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p];
+	    function __() { this.constructor = d; }
+	    d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
+	};
+	var React = __webpack_require__(1);
+	(function (FilterState) {
+	    FilterState[FilterState["Disabled"] = 0] = "Disabled";
+	    FilterState[FilterState["Enabled"] = 1] = "Enabled";
+	    FilterState[FilterState["Active"] = 2] = "Active";
+	})(exports.FilterState || (exports.FilterState = {}));
+	var FilterState = exports.FilterState;
+	var Filterable = (function (_super) {
+	    __extends(Filterable, _super);
+	    function Filterable() {
+	        _super.apply(this, arguments);
+	    }
+	    Filterable.prototype.handleClick = function (e) {
+	        e.stopPropagation();
+	        this.props.onClick();
+	    };
+	    Filterable.prototype.render = function () {
+	        var _this = this;
+	        switch (this.props.filterState) {
+	            case FilterState.Enabled:
+	                return React.createElement("span", {className: "icon-filter", onClick: function (e) { return _this.handleClick(e); }});
+	            case FilterState.Active:
+	                return React.createElement("span", {className: "icon-filter active", onClick: function (e) { return _this.handleClick(e); }});
+	            default:
+	                return null;
+	        }
+	    };
+	    Filterable.defaultProps = {
+	        filterState: FilterState.Disabled
+	    };
+	    return Filterable;
+	}(React.Component));
+	exports.Filterable = Filterable;
+
+
+/***/ },
+/* 10 */
+/***/ function(module, exports, __webpack_require__) {
+
+	"use strict";
+	var __extends = (this && this.__extends) || function (d, b) {
+	    for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p];
+	    function __() { this.constructor = d; }
+	    d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
+	};
+	var React = __webpack_require__(1);
+	var sorting_1 = __webpack_require__(8);
+	var filtering_1 = __webpack_require__(9);
+	var HeaderCell = (function (_super) {
+	    __extends(HeaderCell, _super);
+	    function HeaderCell(props) {
+	        _super.call(this, props);
+	        this.state = {
+	            filterOpen: false
+	        };
+	    }
+	    Object.defineProperty(HeaderCell.prototype, "sortEnabled", {
+	        get: function () {
+	            return this.props.sortState != sorting_1.SortState.Disabled;
+	        },
+	        enumerable: true,
+	        configurable: true
+	    });
+	    Object.defineProperty(HeaderCell.prototype, "filterEnabled", {
+	        get: function () {
+	            return this.props.filterState != filtering_1.FilterState.Disabled;
+	        },
+	        enumerable: true,
+	        configurable: true
+	    });
+	    HeaderCell.prototype.handleSort = function () {
+	        if (this.sortEnabled && this.props.onSort != undefined) {
+	            this.props.onSort();
+	        }
+	    };
+	    HeaderCell.prototype.handleFilter = function () {
+	        this.setState(function (state, props) {
+	            state.filterOpen = !state.filterOpen;
+	            return state;
+	        });
+	    };
+	    HeaderCell.prototype.render = function () {
+	        var _this = this;
+	        var headerCellStyle = { width: this.props.width + 'px' };
+	        var headerCellClasses = ["header-cell", "dropdown"];
+	        var maxWidth = this.props.width - 10;
+	        if (this.sortEnabled) {
+	            headerCellClasses.push("sortable");
+	            maxWidth = maxWidth - 17;
+	        }
+	        if (this.filterEnabled) {
+	            maxWidth = maxWidth - 17;
+	        }
+	        if (this.state.filterOpen) {
+	            headerCellClasses.push("open");
+	        }
+	        var titleStyle = { maxWidth: maxWidth + 'px' };
+	        return (React.createElement("div", {style: headerCellStyle, className: headerCellClasses.join(" "), onClick: function () { return _this.handleSort(); }}, 
+	            React.createElement("span", {style: titleStyle, className: "title", title: this.props.title}, this.props.title), 
+	            React.createElement(sorting_1.Sortable, {sortState: this.props.sortState}), 
+	            React.createElement(filtering_1.Filterable, {filterState: this.props.filterState, onClick: function () { return _this.handleFilter(); }}), 
+	            React.createElement("div", {className: "content"}, 
+	                React.createElement("input", {type: "text"})
+	            )));
+	    };
+	    HeaderCell.defaultProps = {
+	        width: 100
+	    };
+	    return HeaderCell;
+	}(React.Component));
+	exports.HeaderCell = HeaderCell;
+
+
+/***/ },
+/* 11 */
+/***/ function(module, exports, __webpack_require__) {
+
+	"use strict";
+	var __extends = (this && this.__extends) || function (d, b) {
+	    for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p];
+	    function __() { this.constructor = d; }
+	    d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
+	};
+	var React = __webpack_require__(1);
+	var row_1 = __webpack_require__(12);
 	var Body = (function (_super) {
 	    __extends(Body, _super);
 	    function Body() {
@@ -570,7 +631,7 @@
 
 
 /***/ },
-/* 9 */
+/* 12 */
 /***/ function(module, exports, __webpack_require__) {
 
 	"use strict";
@@ -580,7 +641,7 @@
 	    d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
 	};
 	var React = __webpack_require__(1);
-	var cell_1 = __webpack_require__(10);
+	var cell_1 = __webpack_require__(13);
 	var selection_1 = __webpack_require__(7);
 	var Row = (function (_super) {
 	    __extends(Row, _super);
@@ -602,7 +663,7 @@
 
 
 /***/ },
-/* 10 */
+/* 13 */
 /***/ function(module, exports, __webpack_require__) {
 
 	"use strict";
@@ -645,7 +706,7 @@
 
 
 /***/ },
-/* 11 */
+/* 14 */
 /***/ function(module, exports, __webpack_require__) {
 
 	"use strict";

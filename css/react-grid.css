@@ -104,7 +104,10 @@
   padding: 5px;
   z-index: 2;
 }
-.react-grid .dropdown.open .content {
+.react-grid .dropdown .item {
+  line-height: 18px;
+}
+.react-grid .dropdown.open > .content {
   display: block;
 }
 .react-grid .cell {

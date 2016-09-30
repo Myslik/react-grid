@@ -31,12 +31,6 @@ export class Grid extends React.Component<IGridProps, IGridState> {
         this.loadColumns();
     }
 
-    get columns(): IColumn[] {
-        return this.state.columns.filter((c) => {
-            return this.state.select.indexOf(c.key) != -1;
-        });
-    }
-
     buildQuery(): IQuery {
         return {
             skip: this.state.entities.length,
@@ -125,16 +119,21 @@ export class Grid extends React.Component<IGridProps, IGridState> {
             header.style.width = header.parentElement.clientWidth + "px";
         } else {
             body.style.marginTop = "0";
-            header.style.position = "static";
+            header.style.position = "auto";
             header.style.top = "auto";
             header.style.left = "auto";
             header.style.width = "auto";
         }
     }
 
-    handleContextMenu() {
+    handleVisibility(key: string) {
         this.setState((prevState, props) => {
-            //prevState.inSettings = true;
+            var index = prevState.select.indexOf(key);
+            if (index === -1) {
+                prevState.select.push(key);
+            } else {
+                prevState.select.splice(index, 1);
+            }
             return prevState;
         });
     }
@@ -154,24 +153,21 @@ export class Grid extends React.Component<IGridProps, IGridState> {
                 <div className="scrollable" onScroll={ (e) => this.handleScroll(e) }>
                     <div className="inner">
                         <Header
-                            columns={this.columns}
+                            columns={this.state.columns}
+                            select={this.state.select}
                             selected={allSelected}
                             onSelectAll={ () => this.handleSelectAll() }
                             sorting={this.state.sorting}
                             onSort={ (key) => this.handleSort(key) }
-                            onContextMenu={ () => this.handleContextMenu() } />
+                            onVisibility={ (key) => this.handleVisibility(key) } />
                         <Body
-                            columns={this.columns}
+                            columns={this.state.columns}
+                            select={this.state.select}
                             entities={this.state.entities}
                             selection={this.state.selection}
                             onSelect={ (index) => this.handleSelect(index) } />
                     </div>
                 </div>
-                <Settings
-                    visible={this.state.inSettings}
-                    columns={this.state.columns}
-                    select={this.state.select}
-                    onSave={ (select) => this.saveSettings(select) } />
             </div>
         );
     }
