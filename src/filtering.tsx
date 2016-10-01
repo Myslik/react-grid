@@ -7,13 +7,13 @@ export enum FilterState {
 }
 
 export interface IFilterableProps {
-    filterState?: FilterState;
+    state?: FilterState;
     onClick: () => void;
 }
 
 export class Filterable extends React.Component<IFilterableProps, any> {
     static defaultProps = {
-        filterState: FilterState.Disabled
+        state: FilterState.Disabled
     };
 
     handleClick(e: React.MouseEvent<HTMLSpanElement>) {
@@ -22,7 +22,7 @@ export class Filterable extends React.Component<IFilterableProps, any> {
     }
 
     render() {
-        switch (this.props.filterState) {
+        switch (this.props.state) {
             case FilterState.Enabled:
                 return <span className="icon-filter" onClick={(e) => this.handleClick(e)}></span>
             case FilterState.Active:

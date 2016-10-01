@@ -48,8 +48,14 @@
 	var React = __webpack_require__(1);
 	var ReactDOM = __webpack_require__(2);
 	var odata_1 = __webpack_require__(3);
-	var grid_1 = __webpack_require__(5);
-	var adapter = new odata_1.ODataAdapter();
+	var grid_1 = __webpack_require__(4);
+	var Renderers = __webpack_require__(14);
+	var adapter = new odata_1.ODataAdapter("http://services.odata.org/V4/OData/OData.svc/Products", "ID", [
+	    { key: "ID", width: 70 },
+	    { key: "Name", width: 140, sortable: true, render: Renderers.Strong, filterable: true },
+	    { key: "Description", width: 250, sortable: true },
+	    { key: "Rating", width: 70, textAlign: "right" }
+	]);
 	ReactDOM.render(React.createElement(grid_1.Grid, {adapter: adapter}), document.getElementById("example"));
 
 
@@ -67,21 +73,25 @@
 
 /***/ },
 /* 3 */
-/***/ function(module, exports, __webpack_require__) {
+/***/ function(module, exports) {
 
 	"use strict";
-	var Renderers = __webpack_require__(4);
 	var ODataAdapter = (function () {
-	    function ODataAdapter() {
+	    function ODataAdapter(uri, identifier, columns) {
+	        this.uri = uri;
+	        this.identifier = identifier;
+	        this.columns = columns;
 	    }
 	    ODataAdapter.prototype.getColumns = function () {
+	        var _this = this;
 	        return new Promise(function (resolve, reject) {
-	            resolve(ODataAdapter.COLUMNS);
+	            resolve(_this.columns);
 	        });
 	    };
 	    ODataAdapter.prototype.handleResponse = function (response) {
+	        var _this = this;
 	        return response.value.map(function (i) {
-	            i["id"] = i[ODataAdapter.IDENTIFIER];
+	            i["id"] = i[_this.identifier];
 	            return i;
 	        });
 	    };
@@ -108,7 +118,7 @@
 	    };
 	    ODataAdapter.prototype.getRows = function (query) {
 	        var _this = this;
-	        var uri = this.buildUri(ODataAdapter.URI, query);
+	        var uri = this.buildUri(this.uri, query);
 	        return new Promise(function (resolve, reject) {
 	            var request = new XMLHttpRequest();
 	            request.open("GET", uri, true);
@@ -128,14 +138,6 @@
 	            request.send();
 	        });
 	    };
-	    ODataAdapter.URI = "http://services.odata.org/V4/OData/OData.svc/Products";
-	    ODataAdapter.IDENTIFIER = "ID";
-	    ODataAdapter.COLUMNS = [
-	        { key: "ID", width: 70 },
-	        { key: "Name", width: 140, sortable: true, render: Renderers.Strong, filterable: true },
-	        { key: "Description", width: 250, sortable: true },
-	        { key: "Rating", width: 70, textAlign: "right" }
-	    ];
 	    return ODataAdapter;
 	}());
 	exports.ODataAdapter = ODataAdapter;
@@ -146,29 +148,14 @@
 /***/ function(module, exports, __webpack_require__) {
 
 	"use strict";
-	var React = __webpack_require__(1);
-	exports.Strong = function (value) {
-	    return React.createElement("strong", null, value);
-	};
-	exports.Em = function (value) {
-	    return React.createElement("em", null, value);
-	};
-
-
-/***/ },
-/* 5 */
-/***/ function(module, exports, __webpack_require__) {
-
-	"use strict";
 	var __extends = (this && this.__extends) || function (d, b) {
 	    for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p];
 	    function __() { this.constructor = d; }
 	    d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
 	};
 	var React = __webpack_require__(1);
-	var header_1 = __webpack_require__(6);
+	var header_1 = __webpack_require__(5);
 	var body_1 = __webpack_require__(11);
-	var settings_1 = __webpack_require__(14);
 	var Grid = (function (_super) {
 	    __extends(Grid, _super);
 	    function Grid(props) {
@@ -182,16 +169,6 @@
 	        };
 	        this.loadColumns();
 	    }
-	    Object.defineProperty(Grid.prototype, "columns", {
-	        get: function () {
-	            var _this = this;
-	            return this.state.columns.filter(function (c) {
-	                return _this.state.select.indexOf(c.key) != -1;
-	            });
-	        },
-	        enumerable: true,
-	        configurable: true
-	    });
 	    Grid.prototype.buildQuery = function () {
 	        return {
 	            skip: this.state.entities.length,
@@ -282,14 +259,21 @@
 	        }
 	        else {
 	            body.style.marginTop = "0";
-	            header.style.position = "static";
+	            header.style.position = "auto";
 	            header.style.top = "auto";
 	            header.style.left = "auto";
 	            header.style.width = "auto";
 	        }
 	    };
-	    Grid.prototype.handleContextMenu = function () {
+	    Grid.prototype.handleVisibility = function (key) {
 	        this.setState(function (prevState, props) {
+	            var index = prevState.select.indexOf(key);
+	            if (index === -1) {
+	                prevState.select.push(key);
+	            }
+	            else {
+	                prevState.select.splice(index, 1);
+	            }
 	            return prevState;
 	        });
 	    };
@@ -306,10 +290,10 @@
 	        return (React.createElement("div", {className: "react-grid"}, 
 	            React.createElement("div", {className: "scrollable", onScroll: function (e) { return _this.handleScroll(e); }}, 
 	                React.createElement("div", {className: "inner"}, 
-	                    React.createElement(header_1.Header, {columns: this.columns, selected: allSelected, onSelectAll: function () { return _this.handleSelectAll(); }, sorting: this.state.sorting, onSort: function (key) { return _this.handleSort(key); }, onContextMenu: function () { return _this.handleContextMenu(); }}), 
-	                    React.createElement(body_1.Body, {columns: this.columns, entities: this.state.entities, selection: this.state.selection, onSelect: function (index) { return _this.handleSelect(index); }}))
-	            ), 
-	            React.createElement(settings_1.Settings, {visible: this.state.inSettings, columns: this.state.columns, select: this.state.select, onSave: function (select) { return _this.saveSettings(select); }})));
+	                    React.createElement(header_1.Header, {columns: this.state.columns, select: this.state.select, selected: allSelected, onSelectAll: function () { return _this.handleSelectAll(); }, sorting: this.state.sorting, onSort: function (key) { return _this.handleSort(key); }, onVisibility: function (key) { return _this.handleVisibility(key); }}), 
+	                    React.createElement(body_1.Body, {columns: this.state.columns, select: this.state.select, entities: this.state.entities, selection: this.state.selection, onSelect: function (index) { return _this.handleSelect(index); }}))
+	            )
+	        ));
 	    };
 	    return Grid;
 	}(React.Component));
@@ -317,7 +301,7 @@
 
 
 /***/ },
-/* 6 */
+/* 5 */
 /***/ function(module, exports, __webpack_require__) {
 
 	"use strict";
@@ -327,15 +311,29 @@
 	    d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
 	};
 	var React = __webpack_require__(1);
-	var selection_1 = __webpack_require__(7);
-	var sorting_1 = __webpack_require__(8);
-	var filtering_1 = __webpack_require__(9);
-	var headerCell_1 = __webpack_require__(10);
+	var selection_1 = __webpack_require__(6);
+	var sorting_1 = __webpack_require__(7);
+	var filtering_1 = __webpack_require__(8);
+	var headerCell_1 = __webpack_require__(9);
+	var visibility_1 = __webpack_require__(10);
 	var Header = (function (_super) {
 	    __extends(Header, _super);
-	    function Header() {
-	        _super.apply(this, arguments);
+	    function Header(props) {
+	        _super.call(this, props);
+	        this.state = {
+	            visibilityOpen: false
+	        };
 	    }
+	    Object.defineProperty(Header.prototype, "columns", {
+	        get: function () {
+	            var _this = this;
+	            return this.props.columns.filter(function (c) {
+	                return _this.props.select.indexOf(c.key) != -1;
+	            });
+	        },
+	        enumerable: true,
+	        configurable: true
+	    });
 	    Header.prototype.getSortState = function (column) {
 	        if (column.sortable) {
 	            if (this.props.sorting && this.props.sorting.key == column.key) {
@@ -357,18 +355,26 @@
 	            return filtering_1.FilterState.Disabled;
 	        }
 	    };
-	    Header.prototype.onContextMenu = function (e) {
+	    Header.prototype.handleVisibility = function (e) {
 	        e.preventDefault();
-	        this.props.onContextMenu();
+	        this.setState(function (state, props) {
+	            state.visibilityOpen = !state.visibilityOpen;
+	            return state;
+	        });
 	    };
 	    Header.prototype.render = function () {
 	        var _this = this;
-	        return (React.createElement("div", {className: "header", onContextMenu: this.onContextMenu.bind(this)}, 
+	        var headerClasses = ["header", "dropdown"];
+	        if (this.state.visibilityOpen) {
+	            headerClasses.push("open");
+	        }
+	        return (React.createElement("div", {className: headerClasses.join(" "), onContextMenu: function (e) { return _this.handleVisibility(e); }}, 
 	            React.createElement(selection_1.CheckboxHeaderCell, {checked: this.props.selected, onCheck: this.props.onSelectAll}), 
-	            this.props.columns.map(function (column) {
+	            this.columns.map(function (column) {
 	                var title = column.title || column.key;
 	                return (React.createElement(headerCell_1.HeaderCell, {key: column.key, title: title, width: column.width, onSort: function () { return _this.props.onSort(column.key); }, sortState: _this.getSortState(column), filterState: _this.getFilterState(column)}));
-	            })));
+	            }), 
+	            React.createElement(visibility_1.VisibilityDropdown, {columns: this.props.columns, select: this.props.select, onChange: this.props.onVisibility})));
 	    };
 	    Header.defaultProps = {
 	        sorting: {}
@@ -379,7 +385,7 @@
 
 
 /***/ },
-/* 7 */
+/* 6 */
 /***/ function(module, exports, __webpack_require__) {
 
 	"use strict";
@@ -436,7 +442,7 @@
 
 
 /***/ },
-/* 8 */
+/* 7 */
 /***/ function(module, exports, __webpack_require__) {
 
 	"use strict";
@@ -459,7 +465,7 @@
 	        _super.apply(this, arguments);
 	    }
 	    Sortable.prototype.render = function () {
-	        switch (this.props.sortState) {
+	        switch (this.props.state) {
 	            case SortState.Ascending:
 	                return React.createElement("span", {className: "icon-sort-up"});
 	            case SortState.Descending:
@@ -479,7 +485,7 @@
 
 
 /***/ },
-/* 9 */
+/* 8 */
 /***/ function(module, exports, __webpack_require__) {
 
 	"use strict";
@@ -506,7 +512,7 @@
 	    };
 	    Filterable.prototype.render = function () {
 	        var _this = this;
-	        switch (this.props.filterState) {
+	        switch (this.props.state) {
 	            case FilterState.Enabled:
 	                return React.createElement("span", {className: "icon-filter", onClick: function (e) { return _this.handleClick(e); }});
 	            case FilterState.Active:
@@ -516,15 +522,32 @@
 	        }
 	    };
 	    Filterable.defaultProps = {
-	        filterState: FilterState.Disabled
+	        state: FilterState.Disabled
 	    };
 	    return Filterable;
 	}(React.Component));
 	exports.Filterable = Filterable;
+	var FilterDropdown = (function (_super) {
+	    __extends(FilterDropdown, _super);
+	    function FilterDropdown() {
+	        _super.apply(this, arguments);
+	    }
+	    FilterDropdown.prototype.handleClick = function (e) {
+	        e.stopPropagation();
+	    };
+	    FilterDropdown.prototype.render = function () {
+	        var _this = this;
+	        return (React.createElement("div", {className: "content", onClick: function (e) { return _this.handleClick(e); }}, 
+	            React.createElement("input", {type: "text"})
+	        ));
+	    };
+	    return FilterDropdown;
+	}(React.Component));
+	exports.FilterDropdown = FilterDropdown;
 
 
 /***/ },
-/* 10 */
+/* 9 */
 /***/ function(module, exports, __webpack_require__) {
 
 	"use strict";
@@ -534,8 +557,8 @@
 	    d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
 	};
 	var React = __webpack_require__(1);
-	var sorting_1 = __webpack_require__(8);
-	var filtering_1 = __webpack_require__(9);
+	var sorting_1 = __webpack_require__(7);
+	var filtering_1 = __webpack_require__(8);
 	var HeaderCell = (function (_super) {
 	    __extends(HeaderCell, _super);
 	    function HeaderCell(props) {
@@ -587,11 +610,9 @@
 	        var titleStyle = { maxWidth: maxWidth + 'px' };
 	        return (React.createElement("div", {style: headerCellStyle, className: headerCellClasses.join(" "), onClick: function () { return _this.handleSort(); }}, 
 	            React.createElement("span", {style: titleStyle, className: "title", title: this.props.title}, this.props.title), 
-	            React.createElement(sorting_1.Sortable, {sortState: this.props.sortState}), 
-	            React.createElement(filtering_1.Filterable, {filterState: this.props.filterState, onClick: function () { return _this.handleFilter(); }}), 
-	            React.createElement("div", {className: "content"}, 
-	                React.createElement("input", {type: "text"})
-	            )));
+	            React.createElement(sorting_1.Sortable, {state: this.props.sortState}), 
+	            React.createElement(filtering_1.Filterable, {state: this.props.filterState, onClick: function () { return _this.handleFilter(); }}), 
+	            React.createElement(filtering_1.FilterDropdown, null)));
 	    };
 	    HeaderCell.defaultProps = {
 	        width: 100
@@ -599,6 +620,40 @@
 	    return HeaderCell;
 	}(React.Component));
 	exports.HeaderCell = HeaderCell;
+
+
+/***/ },
+/* 10 */
+/***/ function(module, exports, __webpack_require__) {
+
+	"use strict";
+	var __extends = (this && this.__extends) || function (d, b) {
+	    for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p];
+	    function __() { this.constructor = d; }
+	    d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
+	};
+	var React = __webpack_require__(1);
+	var VisibilityDropdown = (function (_super) {
+	    __extends(VisibilityDropdown, _super);
+	    function VisibilityDropdown() {
+	        _super.apply(this, arguments);
+	    }
+	    VisibilityDropdown.prototype.handleClick = function (e) {
+	        e.stopPropagation();
+	    };
+	    VisibilityDropdown.prototype.render = function () {
+	        var _this = this;
+	        return (React.createElement("div", {className: "content", onClick: function (e) { return _this.handleClick(e); }}, this.props.columns.map(function (column) {
+	            var title = column.title || column.key;
+	            var visible = _this.props.select.indexOf(column.key) != -1;
+	            return (React.createElement("div", {key: column.key, className: "item"}, 
+	                React.createElement("input", {type: "checkbox", name: column.key, id: column.key, checked: visible, onChange: function () { return _this.props.onChange(column.key); }}), 
+	                React.createElement("label", {htmlFor: column.key}, title)));
+	        })));
+	    };
+	    return VisibilityDropdown;
+	}(React.Component));
+	exports.VisibilityDropdown = VisibilityDropdown;
 
 
 /***/ },
@@ -618,11 +673,21 @@
 	    function Body() {
 	        _super.apply(this, arguments);
 	    }
+	    Object.defineProperty(Body.prototype, "columns", {
+	        get: function () {
+	            var _this = this;
+	            return this.props.columns.filter(function (c) {
+	                return _this.props.select.indexOf(c.key) != -1;
+	            });
+	        },
+	        enumerable: true,
+	        configurable: true
+	    });
 	    Body.prototype.render = function () {
 	        var _this = this;
 	        return (React.createElement("div", {className: "body"}, this.props.entities.map(function (entity, index) {
 	            var selected = _this.props.selection.indexOf(entity.id) != -1;
-	            return (React.createElement(row_1.Row, {key: entity.id, entity: entity, columns: _this.props.columns, selected: selected, onSelect: function () { return _this.props.onSelect(index); }}));
+	            return (React.createElement(row_1.Row, {key: entity.id, entity: entity, columns: _this.columns, selected: selected, onSelect: function () { return _this.props.onSelect(index); }}));
 	        })));
 	    };
 	    return Body;
@@ -642,7 +707,7 @@
 	};
 	var React = __webpack_require__(1);
 	var cell_1 = __webpack_require__(13);
-	var selection_1 = __webpack_require__(7);
+	var selection_1 = __webpack_require__(6);
 	var Row = (function (_super) {
 	    __extends(Row, _super);
 	    function Row() {
@@ -710,64 +775,13 @@
 /***/ function(module, exports, __webpack_require__) {
 
 	"use strict";
-	var __extends = (this && this.__extends) || function (d, b) {
-	    for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p];
-	    function __() { this.constructor = d; }
-	    d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
-	};
 	var React = __webpack_require__(1);
-	exports.OperatorSelect = function (value) {
-	    return (React.createElement("select", {defaultValue: value}, 
-	        React.createElement("option", {value: "eq"}, "equals"), 
-	        React.createElement("option", {value: "ne"}, "not equals")));
+	exports.Strong = function (value) {
+	    return React.createElement("strong", null, value);
 	};
-	exports.ValueField = function (value) {
-	    return (React.createElement("input", {type: "text", defaultValue: value}));
+	exports.Em = function (value) {
+	    return React.createElement("em", null, value);
 	};
-	var Settings = (function (_super) {
-	    __extends(Settings, _super);
-	    function Settings(props) {
-	        _super.call(this, props);
-	        this.state = {
-	            select: props.select
-	        };
-	    }
-	    Settings.prototype.handleSelect = function (key) {
-	        this.setState(function (prevState, props) {
-	            var index = prevState.select.indexOf(key);
-	            if (index === -1) {
-	                prevState.select.push(key);
-	            }
-	            else {
-	                prevState.select.splice(index, 1);
-	            }
-	            return prevState;
-	        });
-	    };
-	    Settings.prototype.render = function () {
-	        var _this = this;
-	        var style = {
-	            display: this.props.visible ? "block" : "none"
-	        };
-	        return (React.createElement("div", {className: "settings", style: style}, 
-	            React.createElement("div", {className: "title"}, "Grid Settings"), 
-	            this.props.columns.map(function (column) {
-	                var title = column.title || column.key;
-	                var visible = _this.state.select.indexOf(column.key) != -1;
-	                return (React.createElement("div", {key: column.key, className: "row"}, 
-	                    React.createElement("input", {type: "checkbox", name: column.key, id: column.key, checked: visible, onClick: function () { return _this.handleSelect(column.key); }}), 
-	                    React.createElement("label", {htmlFor: column.key}, title)));
-	            }), 
-	            React.createElement("div", {className: "actions"}, 
-	                React.createElement("button", {onClick: function () { return _this.props.onSave(_this.state.select); }}, "Save")
-	            )));
-	    };
-	    Settings.defaultProps = {
-	        visible: false
-	    };
-	    return Settings;
-	}(React.Component));
-	exports.Settings = Settings;
 
 
 /***/ }

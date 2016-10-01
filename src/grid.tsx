@@ -2,7 +2,6 @@ import * as React from "react";
 import { IRow, IColumn, IQuery, IFilter, ISorting, IAdapter } from "./adapter";
 import { Header } from "./header";
 import { Body } from "./body";
-import { Settings } from "./settings";
 
 export interface IGridProps {
     adapter: IAdapter;

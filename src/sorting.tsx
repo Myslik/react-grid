@@ -8,7 +8,7 @@ export enum SortState {
 }
 
 export interface ISortableProps {
-    sortState?: SortState;
+    state?: SortState;
 }
 
 export class Sortable extends React.Component<ISortableProps, any> {
@@ -17,7 +17,7 @@ export class Sortable extends React.Component<ISortableProps, any> {
     };
 
     render() {
-        switch (this.props.sortState) {
+        switch (this.props.state) {
             case SortState.Ascending:
                 return <span className="icon-sort-up"></span>
             case SortState.Descending:

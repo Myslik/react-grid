@@ -65,8 +65,8 @@ export class HeaderCell extends React.Component<IHeaderCellProps, IHeaderCellSta
         return (
             <div style={headerCellStyle} className={headerCellClasses.join(" ")} onClick={ () => this.handleSort() }>
                 <span style={titleStyle} className="title" title={this.props.title}>{this.props.title}</span>
-                <Sortable sortState={this.props.sortState} />
-                <Filterable filterState={this.props.filterState} onClick={ () => this.handleFilter() } />
+                <Sortable state={this.props.sortState} />
+                <Filterable state={this.props.filterState} onClick={ () => this.handleFilter() } />
                 <FilterDropdown />
             </div>
         );
