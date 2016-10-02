@@ -1,6 +1,6 @@
 import { IRow, IColumn, IQuery, IAdapter } from "./adapter";
 
-interface ODataResponse {
+export interface ODataResponse {
     value: any[];
 }
 

@@ -2,6 +2,12 @@
   "name": "awesome-grid",
   "version": "0.0.1",
   "private": true,
+  "scripts": {
+    "start": "node_modules/.bin/webpack",
+    "start.server": "node_modules/.bin/webpack-dev-server",
+    "pretest": "tsc -p tests",
+    "test": "node_modules/.bin/jasmine tests/dist/**/*.spec.js"
+  },
   "dependencies": {
     "@types/es6-promise": "0.0.32",
     "@types/react": "^0.14.36",
@@ -11,6 +17,8 @@
     "react-dom": "^15.3.2"
   },
   "devDependencies": {
+    "@types/jasmine": "^2.2.34",
+    "jasmine": "^2.5.2",
     "source-map-loader": "^0.1.5",
     "ts-loader": "^0.8.2",
     "typescript": "^2.0.3",
