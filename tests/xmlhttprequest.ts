@@ -1,18 +1,20 @@
 export class XMLHttpRequest {
-  static requests: XMLHttpRequest[] = [];
+    method: string;
+    url: string;
 
-  method: string;
-  url: string;
+    open(method: string, url: string, async?: boolean) {
+        this.method = method;
+        this.url = url;
+    }
 
-  open(method: string, url: string, async?: boolean) {
-    this.method = method;
-    this.url = url;
-  }
+    onload: (this: this, ev: Event) => any;
+    onerror: (this: this, ev: ErrorEvent) => any;
 
-  onload: (this: this, ev: Event) => any;
-  onerror: (this: this, ev: ErrorEvent) => any;
+    send() {
+        WebServer.handle(this);
+    }
+}
 
-  send() {
-    XMLHttpRequest.requests.push(this);
-  }
+export class WebServer {
+    static handle: (request: XMLHttpRequest) => any;
 }

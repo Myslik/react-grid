@@ -1,6 +1,6 @@
 /// <reference types="..\node_modules\@types\jest" />
 
-import { XMLHttpRequest } from "./XMLHttpRequest";
+import { WebServer } from "./XMLHttpRequest";
 import { ODataAdapter } from "../src/odata";
 
 it('ODataAdapter can be constructed', () => {
@@ -10,8 +10,9 @@ it('ODataAdapter can be constructed', () => {
 
 it('ODataAdapter can get rows', () => {
   var adapter = new ODataAdapter("http://services.odata.org/V4/OData/OData.svc/Products", "ID", []);
-  adapter.getRows().then(rows => {
-    expect(XMLHttpRequest.requests[0].method).toBe("GET");
-    expect(XMLHttpRequest.requests[0].url).toBe("http://services.odata.org/V4/OData/OData.svc/Products");
-  });
+  WebServer.handle = request => {
+    expect(request.method).toBe("GET");
+    expect(request.url).toBe("http://services.odata.org/V4/OData/OData.svc/Products");
+  };
+  adapter.getRows().then();
 });
