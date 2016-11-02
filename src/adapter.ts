@@ -1,12 +1,10 @@
-/// <reference path="../typings/globals/es6-promise/index.d.ts" />
-
-export interface IEntity {
+export interface IRow {
     [key: string]: any;
     id: string;
 }
 
 export interface IRender {
-    (value: any): any;
+    (value: any): JSX.Element;
 }
 
 export interface IColumn {
@@ -15,6 +13,7 @@ export interface IColumn {
     width?: number;
     textAlign?: any;
     sortable?: boolean;
+    filterable?: boolean;
     render?: IRender;
 }
 
@@ -39,10 +38,5 @@ export interface IQuery {
 
 export interface IAdapter {
     getColumns(): Promise<IColumn[]>;
-    find(query?: IQuery): Promise<IEntity[]>;
-}
-
-export abstract class Adapter implements IAdapter {
-    abstract getColumns(): Promise<IColumn[]>;
-    abstract find(query?: IQuery): Promise<IEntity[]>;
+    getRows(query?: IQuery): Promise<IRow[]>;
 }

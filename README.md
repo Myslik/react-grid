@@ -21,3 +21,4 @@
 - [ ] Store Grid state in localStorage
 - [ ] Loading indicator
 - [ ] Animations
+- [ ] Editable mode

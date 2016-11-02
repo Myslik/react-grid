@@ -1,11 +1,10 @@
-/// <reference path="../typings/index.d.ts" />
-
 import * as React from "react";
-import { IEntity, IColumn } from "./adapter";
-import { CheckboxCell, Cell } from "./cell";
+import { IRow, IColumn } from "./adapter";
+import { Cell } from "./cell";
+import { CheckboxCell } from "./selection";
 
 export interface IRowProps {
-    entity: IEntity,
+    entity: IRow,
     columns: IColumn[],
     selected: boolean,
     onSelect: () => void
@@ -14,7 +13,7 @@ export interface IRowProps {
 export class Row extends React.Component<IRowProps, any> {
     render() {
         return (
-            <div className="react-grid-row">
+            <div className="row">
                 <CheckboxCell checked={this.props.selected} onCheck={this.props.onSelect} />
                 {
                     this.props.columns.map((column) => {

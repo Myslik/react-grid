@@ -1,4 +1,3 @@
-<<<<<<< HEAD
 # Logs
 logs
 *.log
@@ -289,4 +288,6 @@ paket-files/
 # JetBrains Rider
 .idea/
 *.sln.iml
->>>>>>> 7cbec13457f2544d1b3d1785826c7d716c47ee15
+
+# Compiled jasmine specs
+tests/dist/

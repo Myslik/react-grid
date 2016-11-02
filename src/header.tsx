@@ -1,27 +1,42 @@
-/// <reference path="../typings/index.d.ts" />
-
 import * as React from "react";
 import { ISorting, IColumn } from "./adapter";
-
-export enum SortState {
-    Disabled,
-    Enabled,
-    Ascending,
-    Descending
-}
+import { CheckboxHeaderCell } from "./selection";
+import { SortState } from "./sorting";
+import { FilterState } from "./filtering";
+import { HeaderCell } from "./headerCell";
+import { VisibilityDropdown } from "./visibility";
 
 export interface IHeaderProps {
     columns: IColumn[];
+    select: string[];
     selected: boolean;
     onSelectAll: () => void;
     onSort: (key: string) => void;
-    sorting: ISorting;
+    onVisibility: (key: string) => void;
+    sorting?: ISorting;
 }
 
-export class Header extends React.Component<IHeaderProps, void> {
+export interface IHeaderState {
+    visibilityOpen: boolean;
+}
+
+export class Header extends React.Component<IHeaderProps, IHeaderState> {
     static defaultProps = {
         sorting: {}
     };
+
+    constructor(props: IHeaderProps) {
+        super(props);
+        this.state = {
+            visibilityOpen: false
+        };
+    }
+
+    get columns(): IColumn[] {
+        return this.props.columns.filter((c) => {
+            return this.props.select.indexOf(c.key) != -1;
+        });
+    }
 
     getSortState(column: IColumn): SortState {
         if (column.sortable) {
@@ -35,12 +50,32 @@ export class Header extends React.Component<IHeaderProps, void> {
         }
     }
 
+    getFilterState(column: IColumn): FilterState {
+        if (column.filterable) {
+            return FilterState.Enabled;
+        } else {
+            return FilterState.Disabled;
+        }
+    }
+
+    handleVisibility(e: React.MouseEvent<HTMLDivElement>) {
+        e.preventDefault();
+        this.setState((state, props) => {
+            state.visibilityOpen = !state.visibilityOpen;
+            return state;
+        });
+    }
+
     render() {
+        var headerClasses = ["header", "dropdown"];
+        if (this.state.visibilityOpen) {
+            headerClasses.push("open");
+        }
         return (
-            <div className="react-grid-header">
+            <div className={headerClasses.join(" ")} onContextMenu={ (e) => this.handleVisibility(e) }>
                 <CheckboxHeaderCell checked={this.props.selected} onCheck={this.props.onSelectAll} />
                 {
-                    this.props.columns.map((column) => {
+                    this.columns.map((column) => {
                         var title = column.title || column.key;
                         return (
                             <HeaderCell
@@ -48,88 +83,15 @@ export class Header extends React.Component<IHeaderProps, void> {
                                 title={title}
                                 width={column.width}
                                 onSort={ () => this.props.onSort(column.key) }
-                                sortState={this.getSortState(column)} />
+                                sortState={this.getSortState(column)}
+                                filterState={this.getFilterState(column)} />
                         );
                     })
                 }
-            </div>
-        );
-    }
-}
-
-export interface IHeaderCellProps {
-    title: string;
-    width?: number;
-    onSort?: () => void;
-    sortState?: SortState;
-}
-
-export class HeaderCell extends React.Component<IHeaderCellProps, any> {
-    static defaultProps = {
-        width: 100,
-        sortState: SortState.Disabled
-    };
-
-    get sortEnabled(): boolean {
-        return this.props.sortState != SortState.Disabled;
-    }
-
-    handleSort() {
-        if (this.sortEnabled) {
-            this.props.onSort();
-        }
-    }
-
-    render() {
-        var width = { width: this.props.width + 'px' };
-        var maxWidth = { maxWidth: this.props.width - 10 - (this.sortEnabled ? 17 : 0) + 'px' };
-        var sortable;
-        switch (this.props.sortState) {
-            case SortState.Ascending:
-                sortable = <span className="icon-sort-up"></span>
-                break;
-            case SortState.Descending:
-                sortable = <span className="icon-sort-down"></span>
-                break;
-            case SortState.Enabled:
-                sortable = <span className="icon-sort"></span>
-                break;
-        }
-        var sortableClass = (this.sortEnabled ? "react-grid-header-cell sortable" : "react-grid-header-cell");
-        return (
-            <div style={width} className={sortableClass} onClick={ () => this.handleSort() }>
-                <span style={maxWidth} className="title" title={this.props.title}>{this.props.title}</span>
-                {sortable}
-            </div>
-        );
-    }
-}
-
-export interface ICheckboxHeaderCellProps {
-    checked: boolean;
-    onCheck: () => void;
-}
-
-export class CheckboxHeaderCell extends React.Component<ICheckboxHeaderCellProps, void> {
-    static defaultProps = {
-        checked: false
-    };
-
-    constructor(props: ICheckboxHeaderCellProps) {
-        super(props);
-    }
-
-    style(): React.CSSProperties {
-        return {
-            padding: '1px',
-            width: '24px'
-        };
-    }
-
-    render() {
-        return (
-            <div onClick={this.props.onCheck} style={ this.style() } className = "react-grid-header-cell">
-                <input type="checkbox" checked={this.props.checked} readOnly />
+                <VisibilityDropdown 
+                    columns={this.props.columns}
+                    select={this.props.select}
+                    onChange={this.props.onVisibility} />
             </div>
         );
     }

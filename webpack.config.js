@@ -1,5 +1,6 @@
 module.exports = {
     entry: "./src/index.tsx",
+
     output: {
         filename: "./dist/react-grid.js",
     },
@@ -15,12 +16,18 @@ module.exports = {
     module: {
         loaders: [
             // All files with a '.ts' or '.tsx' extension will be handled by 'ts-loader'.
-            { test: /\.tsx?$/, loader: "ts-loader" }
+            {
+                test: /\.tsx?$/,
+                loader: "ts-loader"
+            }
         ],
 
         preLoaders: [
             // All output '.js' files will have any sourcemaps re-processed by 'source-map-loader'.
-            { test: /\.js$/, loader: "source-map-loader" }
+            {
+                test: /\.js$/,
+                loader: "source-map-loader"
+            }
         ]
     },
 
@@ -32,6 +39,5 @@ module.exports = {
         "react": "React",
         "react-dom": "ReactDOM",
         "es6-promise": "Promise",
-        "chance": "Chance"
     },
 };

@@ -7,41 +7,41 @@
   position: relative;
   height: 100%;
 }
-.react-grid .react-grid-scrollable {
+.react-grid .scrollable {
   overflow: auto;
   position: relative;
   height: 100%;
 }
-.react-grid .react-grid-inner {
+.react-grid .inner {
   background-color: transparent;
   display: table;
   width: 100%;
 }
-.react-grid .react-grid-header,
-.react-grid .react-grid-row,
-.react-grid .react-grid-body {
+.react-grid .header,
+.react-grid .row,
+.react-grid .body {
   white-space: nowrap;
   display: block;
   position: relative;
 }
-.react-grid .react-grid-header {
+.react-grid .header {
   background-color: #fafafa;
   border-bottom: 1px solid #ddd;
   color: #666;
   text-transform: uppercase;
   z-index: 2;
 }
-.react-grid .react-grid-row {
+.react-grid .row {
   background-color: #fff;
   border-bottom: 1px solid #ddd;
 }
-.react-grid .react-grid-row:last-child {
+.react-grid .row:last-child {
   border-bottom: none;
 }
-.react-grid .react-grid-row.active {
+.react-grid .row.active {
   background-color: #d9edf7;
 }
-.react-grid .react-grid-header-cell {
+.react-grid .header-cell {
   -moz-box-sizing: border-box;
   -webkit-box-sizing: border-box;
   box-sizing: border-box;
@@ -51,38 +51,66 @@
   position: relative;
   vertical-align: top;
   border-right: 1px solid #ddd;
-  white-space: nowrap;
-  overflow: hidden;
-  -ms-text-overflow: ellipsis;
-  -o-text-overflow: ellipsis;
-  text-overflow: ellipsis;
   padding: 5px;
   cursor: default;
 }
-.react-grid .react-grid-header-cell:last-child {
+.react-grid .header-cell:last-child {
   border-right: none;
 }
-.react-grid .react-grid-header-cell.sortable {
+.react-grid .header-cell.sortable {
   cursor: pointer;
 }
-.react-grid .react-grid-header-cell .title {
+.react-grid .header-cell .title {
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
   float: left;
 }
-.react-grid .react-grid-header-cell .icon-sort {
+.react-grid .header-cell .icon-sort {
   float: left;
   text-align: center;
   color: #ccc;
 }
-.react-grid .react-grid-header-cell .icon-sort-down,
-.react-grid .react-grid-header-cell .icon-sort-up {
+.react-grid .header-cell .icon-sort-down,
+.react-grid .header-cell .icon-sort-up {
   float: left;
   text-align: center;
   color: #009ee1;
 }
-.react-grid .react-grid-row-cell {
+.react-grid .header-cell .icon-filter {
+  float: right;
+  text-align: center;
+  color: #ccc;
+}
+.react-grid .header-cell .icon-filter.active {
+  color: #009ee1;
+}
+.react-grid .header-cell:last-child .dropdown .content {
+  left: auto;
+  right: 0;
+}
+.react-grid .dropdown {
+  position: relative;
+}
+.react-grid .dropdown .content {
+  display: none;
+  position: absolute;
+  top: 100%;
+  left: 0;
+  background-color: #fff;
+  min-width: 160px;
+  border: 1px solid rgba(0, 0, 0, 0.15);
+  box-shadow: 0 6px 12px rgba(0, 0, 0, 0.175);
+  padding: 5px;
+  z-index: 2;
+}
+.react-grid .dropdown .item {
+  line-height: 18px;
+}
+.react-grid .dropdown.open > .content {
+  display: block;
+}
+.react-grid .cell {
   -moz-box-sizing: border-box;
   -webkit-box-sizing: border-box;
   box-sizing: border-box;
@@ -99,10 +127,37 @@
   padding: 5px;
   z-index: 1;
 }
-.react-grid .react-grid-row-cell:last-child {
+.react-grid .cell:last-child {
   border-right: none;
 }
-.react-grid .react-grid-settings {
+.react-grid .edit-cell {
+  -moz-box-sizing: border-box;
+  -webkit-box-sizing: border-box;
+  box-sizing: border-box;
+  background-color: transparent;
+  display: inline-block;
+  height: 100%;
+  position: relative;
+  vertical-align: top;
+  white-space: nowrap;
+  overflow: hidden;
+  -ms-text-overflow: ellipsis;
+  -o-text-overflow: ellipsis;
+  text-overflow: ellipsis;
+  padding: 5px;
+  z-index: 1;
+  padding: 0;
+}
+.react-grid .edit-cell:last-child {
+  border-right: none;
+}
+.react-grid .edit-cell input[type="text"] {
+  border: 0;
+  line-height: 22px;
+  width: 100%;
+  padding: 0;
+}
+.react-grid .settings {
   position: absolute;
   top: 0;
   left: 0;
@@ -110,4 +165,20 @@
   height: 100%;
   z-index: 10;
   background-color: white;
+  font-size: 14px;
+}
+.react-grid .settings .title {
+  background-color: #fafafa;
+  border-bottom: 1px solid #ddd;
+  padding: 5px;
+  color: #666;
+  text-transform: uppercase;
+  z-index: 2;
+}
+.react-grid .settings .row {
+  border-bottom: 1px solid #ddd;
+  padding: 5px;
+}
+.react-grid .settings .actions {
+  padding: 5px;
 }

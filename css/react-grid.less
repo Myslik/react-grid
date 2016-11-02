@@ -53,27 +53,27 @@
     position: relative;
 	height: 100%;
 
-	.react-grid-scrollable {
+	.scrollable {
 		overflow: auto;
 		position: relative;
 		height: 100%;
 	}
 
-	.react-grid-inner {
+	.inner {
 		background-color: transparent;
 		display: table;
 		width: 100%;
 	}
 	
-	.react-grid-header,
-    .react-grid-row,
-    .react-grid-body {
+	.header,
+    .row,
+    .body {
         white-space: nowrap;
         display: block;
 		position: relative;
     }
 	
-	.react-grid-header {
+	.header {
 		background-color: @grid-header-bg;
         border-bottom: 1px solid @grid-border-color;
 		color: @grid-header-color;
@@ -81,7 +81,7 @@
         z-index: 2;
     }
 
-    .react-grid-row {
+    .row {
 		background-color: @grid-bg;
         border-bottom: 1px solid @grid-border-color;
 
@@ -94,9 +94,8 @@
 		}
 	}
 	
-	.react-grid-header-cell {
+	.header-cell {
         .header-cell();
-		.ellipsis();
 		padding: @grid-cell-padding;
 		cursor: default;
 
@@ -127,17 +126,73 @@
     		text-align: center;
 			color: @grid-icon-highlight;
 		}
+
+		.icon-filter {
+			float: right;
+			text-align: center;
+			color: @grid-icon-color;
+
+			&.active {
+				color: @grid-icon-highlight;
+			}
+		}
+
+		&:last-child .dropdown .content {
+			left: auto;
+            right: 0;
+        }
+	}
+
+	.dropdown {
+		position: relative;
+
+		.content {
+			display: none;
+	    	position: absolute;
+			top: 100%;
+			left: 0;
+			background-color: @grid-bg;
+			min-width: 160px;
+			border: 1px solid rgba(0,0,0,.15);
+			box-shadow: 0 6px 12px rgba(0,0,0,.175);
+			padding: @grid-cell-padding;
+			z-index: 2;
+		}
+
+		.item {
+			line-height: 18px;
+		}
+
+		&.open > .content {
+			display: block;
+		}
 	}
 	
-	.react-grid-row-cell {
+	.cell {
         .row-cell();
 
         &:last-child {
             border-right: none;
         }
 	}
+
+	.edit-cell {
+		.row-cell();
+		padding: 0;
+
+		&:last-child {
+            border-right: none;
+        }
+
+		input[type="text"] {
+			border: 0;
+			line-height: 22px;
+			width: 100%;
+			padding: 0;
+		}
+	}
 	
-	.react-grid-settings {
+	.settings {
 		position: absolute;
 		top: 0;
 		left: 0;
@@ -145,5 +200,24 @@
 		height: 100%;
 		z-index: 10;
 		background-color: white;
+		font-size: 14px;
+
+		.title {
+			background-color: @grid-header-bg;
+        	border-bottom: 1px solid @grid-border-color;
+			padding: @grid-cell-padding;
+			color: @grid-header-color;
+        	text-transform: uppercase;
+        	z-index: 2;
+		}
+
+		.row {
+			border-bottom: 1px solid @grid-border-color;
+			padding: @grid-cell-padding;
+		}
+
+		.actions {
+			padding: @grid-cell-padding;
+		}
 	}
 }
