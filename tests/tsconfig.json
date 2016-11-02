@@ -1,16 +1,7 @@
 {
-    "compilerOptions": {
-        "outDir": "./dist/",
-        "target": "es5",
-        "module": "commonjs",
-        "jsx": "react",
-        "removeComments": true,
-        "noLib": false,
-        "preserveConstEnums": true,
-        "strictNullChecks": true,
-        "types": ["es6-promise", "react", "react-dom"]
-    },
-    "include": [
-        "*.spec.ts"
-    ]
+  "compilerOptions": {
+    "module": "commonjs",
+    "jsx": "react",
+    "noLib": false
+  }
 }
